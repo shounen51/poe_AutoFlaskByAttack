@@ -22,20 +22,32 @@ import logging
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-import PyQt5.sip
-import discord
 
 from ui.A import A_form
 from utils.button_event import btn_events
-from utils.utils import load_ini, save_ini
+from utils.utils import load_config, save_config, load_ini, save_ini, list_ini
 from configs import default_setting
 
 class MainWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
-        OK, self.setting = load_ini('./setting.ini')
+        self.config_list = list_ini('./configs')
+        self.config_name = load_ini(self.config_list)
+        OK, self.setting = load_config(f"./configs/{self.config_name}.ini")
         self.event = btn_events(self)
         self.ui = A_form(self, self.event)
+
+    def new_config(self, config_name):
+        save_config(f"./configs/{config_name}.ini", default_setting)
+        self.ui.new_config(config_name)
+        self.config_list.append(config_name)
+        self.change_config(config_name)
+
+    def change_config(self, config_name):
+        self.config_name = config_name
+        save_ini(config_name)
+        OK, self.setting = load_config(f"./configs/{self.config_name}.ini")
+        self.ui.load_setting()
 
     def from_setting(self, major_key, detail_key, _type='str'):
         try:
@@ -54,15 +66,22 @@ class MainWindow(QMainWindow):
                 value = True
             else:
                 value = False
+        elif _type == 'list':
+            value = value[1:-1]
+            value = value.split(',')
         elif _type == 'int':
             value = int(value)
         return value
 
     def modfy_setting(self, major_key, detail_key, value):
-        self.setting[major_key][detail_key] = str(value)
+        if type(value) == list:
+            self.setting[major_key][detail_key] = str(value).replace("'", '')
+        else:
+            self.setting[major_key][detail_key] = str(value)
 
     def closeEvent(self, event):
-        save_ini('./setting.ini', self.setting)
+        pass
+        # save_config('./setting.ini', self.setting)
 
 if __name__ == "__main__":
     if not os.path.isdir('./log'):

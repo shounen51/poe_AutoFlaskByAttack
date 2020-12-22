@@ -11,223 +11,212 @@ class A_form():
     def __init__(self, Form, event):
         self.main = Form
         Form.setObjectName("MainWindow")
-        Form.resize(400, 600)
+        Form.resize(511, 719)
         Form.setStyleSheet('QMainWindow {background-color: #242424; color: #E6E6E6;}')
-        Form.setMinimumSize(QtCore.QSize(400, 600))
-        Form.setMaximumSize(QtCore.QSize(700, 600))
-        self.font24 = QtGui.QFont('微軟正黑體', 24)
+        Form.setMinimumSize(QtCore.QSize(511, 719))
+        Form.setMaximumSize(QtCore.QSize(511, 719))
+        self.font36 = QtGui.QFont('微軟正黑體', 36)
         self.font16 = QtGui.QFont('微軟正黑體', 16)
         self.font12 = QtGui.QFont('微軟正黑體', 12)
         self.font9 = QtGui.QFont('微軟正黑體', 9)
 
-        """main"""
+        """ main """
         self.label_main = QtWidgets.QLabel(Form)
-        self.label_main.setGeometry(QtCore.QRect(10, 10, 380, 280))
-        # self.label_main.setStyleSheet('QLabel {background-image : url("./src/waiting.png")}')
+        self.label_main.setGeometry(QtCore.QRect(30, 30, 215, 94))
+        self.label_main.setStyleSheet('QLabel {background-image : url("./src/flask.png")}')
         self.label_main.setObjectName("label_main")
 
-        self.combo_platform = my_ComboBox(Form)
-        self.combo_platform.setFont(self.font16)
-        self.combo_platform.setGeometry(QtCore.QRect(50, 300, 300, 40))
-        self.combo_platform.setObjectName("combo_platform")
-        self.combo_platform.setEditable(True)
-        self.combo_platform.lineEdit().setFont(self.font16)
-        self.combo_platform.lineEdit().setReadOnly(True)
-        self.combo_platform.lineEdit().setAlignment(Qt.AlignCenter)
+        self.label_logo = QtWidgets.QLabel(Form)
+        self.label_logo.setGeometry(QtCore.QRect(440, 10, 60, 60))
+        # self.label_logo.setStyleSheet('QLabel {background-image : url("./src/51.png")}')
+        self.label_logo.setObjectName("label_logo")
 
-        self.edit_channel = my_line_edit(Form)
-        self.edit_channel.setFont(self.font16)
-        self.edit_channel.setGeometry(QtCore.QRect(50, 350, 300, 40))
-        self.edit_channel.setAlignment(Qt.AlignCenter)
+        self.cb_global = my_cb(Form)
+        self.cb_global.setGeometry(QtCore.QRect(280, 30, 16, 16))
+        self.cb_global.setObjectName("cb_global")
+        self.cb_global.setChecked(True)
 
-        self.btn_login = my_btn(Form)
-        self.btn_login.setFont(self.font24)
-        self.btn_login.setGeometry(QtCore.QRect(125, 400, 150, 40))
-        self.btn_login.setObjectName("btn_login")
+        self.gb_global = my_gb(Form)
+        self.gb_global.setFont(self.font12)
+        self.gb_global.setGeometry(QtCore.QRect(300, 30, 111, 94))
 
-        self.name_label = my_label(Form)
-        self.name_label.setGeometry(QtCore.QRect(5, 580, 100, 20))
-        self.name_label.setObjectName("name_label")
+        self.edit_global_enable_key = my_line_edit(self.gb_global)
+        self.edit_global_enable_key.setFont(self.font9)
+        self.edit_global_enable_key.setGeometry(QtCore.QRect(10, 30, 91, 51))
+        self.edit_global_enable_key.setAlignment(Qt.AlignCenter)
 
-        self.cb_optional = my_cb(Form)
-        self.cb_optional.setGeometry(QtCore.QRect(295, 580, 105, 20))
-        self.cb_optional.setObjectName("cb_optional")
+        self.edit_new_config = my_line_edit(Form)
+        self.edit_new_config.setFont(self.font12)
+        self.edit_new_config.setGeometry(QtCore.QRect(30, 140, 101, 31))
+        self.edit_new_config.setAlignment(Qt.AlignCenter)
 
-        """option"""
-        self.btn_save = my_btn(Form)
-        self.btn_save.setFont(self.font12)
-        self.btn_save.setGeometry(QtCore.QRect(590, 534, 100, 23))
-        self.btn_save.setObjectName("btn_save")
+        self.btn_new_config = my_btn(Form)
+        self.btn_new_config.setFont(self.font12)
+        self.btn_new_config.setGeometry(QtCore.QRect(150, 140, 91, 31))
+        self.btn_new_config.setObjectName("btn_new_config")
 
-        self.btn_re_exec = my_btn(Form)
-        self.btn_re_exec.setFont(self.font12)
-        self.btn_re_exec.setGeometry(QtCore.QRect(590, 567, 100, 23))
-        self.btn_re_exec.setObjectName("btn_font")
+        self.combo_config = my_ComboBox(Form)
+        self.combo_config.setFont(self.font12)
+        self.combo_config.setGeometry(QtCore.QRect(260, 140, 121, 31))
+        self.combo_config.setObjectName("combo_config")
+        self.combo_config.setEditable(True)
+        self.combo_config.lineEdit().setFont(self.font12)
+        self.combo_config.lineEdit().setReadOnly(True)
+        self.combo_config.lineEdit().setAlignment(Qt.AlignCenter)
 
-        """ canvas """
-        self.gb_canvas = my_gb(Form)
-        self.gb_canvas.setFont(self.font12)
-        self.gb_canvas.setGeometry(QtCore.QRect(420, 20, 260, 100))
+        self.btn_save_config = my_btn(Form)
+        self.btn_save_config.setFont(self.font12)
+        self.btn_save_config.setGeometry(QtCore.QRect(400, 140, 91, 31))
+        self.btn_save_config.setObjectName("btn_save_config")
 
-        self.cb_on_top = my_cb(self.gb_canvas)
-        self.cb_on_top.setFont(self.font12)
-        self.cb_on_top.setGeometry(QtCore.QRect(30, 30, 215, 20))
-        self.cb_on_top.setObjectName("cb_optional")
-        self.cb_on_top.setChecked(True)
+        """ flask """
+        self.gb_flask = my_gb(Form)
+        self.gb_flask.setFont(self.font12)
+        self.gb_flask.setGeometry(QtCore.QRect(40, 190, 431, 161))
 
-        self.cb_avoid_crosshair = my_cb(self.gb_canvas)
-        self.cb_avoid_crosshair.setFont(self.font12)
-        self.cb_avoid_crosshair.setGeometry(QtCore.QRect(30, 60, 215, 20))
-        self.cb_avoid_crosshair.setObjectName("cb_avoid_crosshair")
-        self.cb_avoid_crosshair.setChecked(True)
+        self.edit_flask_key = []
+        for i in range(5):
+            _edit = my_line_edit(self.gb_flask)
+            _edit.setFont(self.font36)
+            _edit.setGeometry(QtCore.QRect(30 + 80*i, 30, 51, 71))
+            _edit.setAlignment(Qt.AlignCenter)
+            self.edit_flask_key.append(_edit)
 
-        """ barrage """
-        self.gb_barrage = my_gb(Form)
-        self.gb_barrage.setFont(self.font12)
-        self.gb_barrage.setGeometry(QtCore.QRect(420, 140, 260, 181))
+        self.edit_flask_time = []
+        for i in range(5):
+            _edit = my_line_edit(self.gb_flask)
+            _edit.setFont(self.font16)
+            _edit.setGeometry(QtCore.QRect(30 + 80*i, 110, 51, 31))
+            _edit.setAlignment(Qt.AlignCenter)
+            _edit.setValidator(QDoubleValidator())
+            self.edit_flask_time.append(_edit)
 
-        self.cb_show_name = my_cb(self.gb_barrage)
-        self.cb_show_name.setFont(self.font12)
-        self.cb_show_name.setGeometry(QtCore.QRect(30, 30, 191, 21))
-        self.cb_show_name.setObjectName("cb_show_name")
+        """ buff """
+        self.gb_buff = my_gb(Form)
+        self.gb_buff.setFont(self.font12)
+        self.gb_buff.setGeometry(QtCore.QRect(40, 370, 431, 161))
 
-        self.label_size = my_label(self.gb_barrage)
-        self.label_size.setFont(self.font12)
-        self.label_size.setGeometry(QtCore.QRect(15, 60, 76, 21))
-        self.label_size.setObjectName("label_size")
-        self.label_size.setAlignment(Qt.AlignCenter)
+        self.edit_buff_key = []
+        for i in range(5):
+            _edit = my_line_edit(self.gb_buff)
+            _edit.setFont(self.font36)
+            _edit.setGeometry(QtCore.QRect(30 + 80*i, 30, 51, 71))
+            _edit.setAlignment(Qt.AlignCenter)
+            self.edit_buff_key.append(_edit)
 
-        self.edit_size = my_line_edit(self.gb_barrage)
-        self.edit_size.setFont(self.font12)
-        self.edit_size.setGeometry(QtCore.QRect(100, 60, 121, 21))
-        self.edit_size.setAlignment(Qt.AlignCenter)
-        self.edit_size.setValidator(QIntValidator())
+        self.edit_buff_time = []
+        for i in range(5):
+            _edit = my_line_edit(self.gb_buff)
+            _edit.setFont(self.font16)
+            _edit.setGeometry(QtCore.QRect(30 + 80*i, 110, 51, 31))
+            _edit.setAlignment(Qt.AlignCenter)
+            _edit.setValidator(QDoubleValidator())
+            self.edit_buff_time.append(_edit)
 
-        self.label_time = my_label(self.gb_barrage)
-        self.label_time.setFont(self.font12)
-        self.label_time.setGeometry(QtCore.QRect(15, 90, 76, 21))
-        self.label_time.setObjectName("label_time")
-        self.label_time.setAlignment(Qt.AlignCenter)
+        self.gb_trigger = my_gb(Form)
+        self.gb_trigger.setFont(self.font12)
+        self.gb_trigger.setGeometry(QtCore.QRect(40, 550, 431, 161))
 
-        self.edit_time = my_line_edit(self.gb_barrage)
-        self.edit_time.setFont(self.font12)
-        self.edit_time.setGeometry(QtCore.QRect(100, 90, 121, 21))
-        self.edit_time.setAlignment(Qt.AlignCenter)
-        self.edit_time.setValidator(QIntValidator())
-
-        self.label_alpha = my_label(self.gb_barrage)
-        self.label_alpha.setFont(self.font12)
-        self.label_alpha.setGeometry(QtCore.QRect(30, 120, 61, 21))
-        self.label_alpha.setObjectName("label_alpha")
-        self.label_alpha.setAlignment(Qt.AlignCenter)
-
-        self.sli_alpha = my_slider(Qt.Horizontal, self.gb_barrage)
-        self.sli_alpha.setGeometry(QtCore.QRect(100, 120, 121, 22))
-        self.sli_alpha.setObjectName("sli_alpha")
-
-        self.label_font = my_label(self.gb_barrage)
-        self.label_font.setFont(self.font9)
-        self.label_font.setGeometry(QtCore.QRect(20, 150, 230, 23))
-        self.label_font.setObjectName("label_font")
-
-        """ Twitch """
-        self.gb_twitch = my_gb(Form)
-        self.gb_twitch.setFont(self.font12)
-        self.gb_twitch.setGeometry(QtCore.QRect(420, 340, 260, 90))
-
-        self.label_twitch_id = my_label(self.gb_twitch)
-        self.label_twitch_id.setFont(self.font12)
-        self.label_twitch_id.setGeometry(QtCore.QRect(30, 30, 61, 21))
-        self.label_twitch_id.setObjectName("label_twitch_id")
-        self.label_twitch_id.setAlignment(Qt.AlignCenter)
-
-        self.edit_twitch_id = my_line_edit(self.gb_twitch)
-        self.edit_twitch_id.setFont(self.font12)
-        self.edit_twitch_id.setGeometry(QtCore.QRect(100, 30, 121, 21))
-        self.edit_twitch_id.setAlignment(Qt.AlignCenter)
-        self.edit_twitch_id.setValidator(QIntValidator())
-
-        self.label_twitch_thanks = my_label(self.gb_twitch)
-        self.label_twitch_thanks.setFont(self.font9)
-        self.label_twitch_thanks.setGeometry(QtCore.QRect(20, 60, 231, 21))
-        self.label_twitch_thanks.setObjectName("label_twitch_thanks")
+        """ trigger """
+        self.edit_trigger_key = []
+        for i in range(5):
+            _edit = my_line_edit(self.gb_trigger)
+            _edit.setFont(self.font36)
+            _edit.setGeometry(QtCore.QRect(30 + 80*i, 30, 51, 71))
+            _edit.setAlignment(Qt.AlignCenter)
+            self.edit_trigger_key.append(_edit)
 
         """ not ui """
-        self.bot_login_signal = my_btn(Form)
-        self.bot_login_signal.setVisible(False)
-
         self.retranslateUi(Form)
-        self.init_platform_combobox()
+        self.init_config_combobox()
         self.load_setting()
-
         QtCore.QMetaObject.connectSlotsByName(Form)
         self.event_connect(event)
 
     def event_connect(self, event):
-        self.edit_channel.returnPressed.connect(lambda:self.btn_login.click())
-        self.edit_channel.editingFinished.connect(event.edit_channel)
-        self.btn_login.clicked.connect(event.btn_login)
-        self.btn_save.clicked.connect(event.btn_save)
-        self.combo_platform.currentIndexChanged.connect(event.combo_platform)
-        self.cb_optional.stateChanged.connect(event.cb_optional)
-        self.cb_on_top.stateChanged.connect(event.cb_on_top)
-        self.cb_avoid_crosshair.stateChanged.connect(event.cb_avoid_crosshair)
-        self.sli_alpha.valueChanged.connect(event.sli_alpha)
-        self.cb_show_name.stateChanged.connect(event.cb_show_name)
-        self.btn_re_exec.clicked.connect(event.btn_re_exec)
+        self.btn_new_config.clicked.connect(event.btn_new_config)
+        self.edit_new_config.returnPressed.connect(lambda:self.btn_new_config.click())
+        self.combo_config.currentIndexChanged.connect(event.combo_config)
+        self.btn_save_config.clicked.connect(event.btn_save_config)
+        self.cb_global.stateChanged.connect(lambda:self.enable_edit(True ,'global'))
 
-        self.bot_login_signal.clicked.connect(self.main.login)
+        # self.edit_channel.editingFinished.connect(event.edit_channel)
+        # self.cb_optional.stateChanged.connect(event.cb_optional)
+        # self.cb_on_top.stateChanged.connect(event.cb_on_top)
+        # self.cb_avoid_crosshair.stateChanged.connect(event.cb_avoid_crosshair)
+        # self.sli_alpha.valueChanged.connect(event.sli_alpha)
+        # self.cb_show_name.stateChanged.connect(event.cb_show_name)
+        # self.btn_re_exec.clicked.connect(event.btn_re_exec)
+
+        # self.bot_login_signal.clicked.connect(self.main.login)
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("MainWindow", "彈幕機器人 V1.0"))
-        self.btn_login.setText(_translate("MainWindow", "登入頻道"))
-        self.edit_channel.setPlaceholderText(_translate("MainWindow", "channel"))
-        self.name_label.setText(_translate("MainWindow", "by shounen51"))
-        self.cb_optional.setText(_translate("MainWindow", "開啟設定選單→"))
+        Form.setWindowTitle(_translate("MainWindow", "POE自動喝水 V1.0"))
+        self.btn_new_config.setText(_translate("MainWindow", "新增設定"))
+        self.btn_save_config.setText(_translate("MainWindow", "儲存設定"))
+        self.gb_global.setTitle(_translate("MainWindow", "啟用快捷鍵"))
+        self.edit_global_enable_key.setPlaceholderText(_translate("MainWindow", "shift"))
+        self.edit_new_config.setPlaceholderText(_translate("MainWindow", "設定檔名稱"))
 
-        self.gb_canvas.setTitle(_translate("MainWindow", "彈幕畫布設定"))
-        self.cb_on_top.setText(_translate("MainWindow", "彈幕視窗置於頂部"))
-        self.cb_avoid_crosshair.setText(_translate("MainWindow", "彈幕避開遊戲準心"))
+        self.gb_flask.setTitle(_translate("MainWindow", "藥水按鍵與持續時間"))
+        self.edit_flask_key[0].setPlaceholderText(_translate("MainWindow", "1"))
+        self.edit_flask_time[0].setPlaceholderText(_translate("MainWindow", "4.8"))
 
-        self.gb_barrage.setTitle(_translate("MainWindow", "彈幕設定"))
-        self.label_size.setText(_translate("MainWindow", "※字體大小"))
-        self.label_time.setText(_translate("MainWindow", "※顯示時間"))
-        self.label_alpha.setText(_translate("MainWindow", "字體透明"))
-        self.cb_show_name.setText(_translate("MainWindow", "顯示觀眾名稱"))
-        self.label_font.setText(_translate("MainWindow", "※部分功能需要重新啟動程式後生效"))
-        
-        self.gb_twitch.setTitle(_translate("MainWindow", "Twitch專屬表情符號"))
-        self.label_twitch_id.setText(_translate("MainWindow", "頻道ID"))
-        self.label_twitch_thanks.setText(_translate("MainWindow", "※感謝https://twitchemotes.com/提供API"))
+        self.gb_buff.setTitle(_translate("MainWindow", "增益按鍵與持續時間"))
+        self.edit_buff_key[0].setPlaceholderText(_translate("MainWindow", "q"))
+        self.edit_buff_time[0].setPlaceholderText(_translate("MainWindow", "8.7"))
 
-        self.btn_save.setText(_translate("MainWindow", "儲存設定"))
-        self.btn_re_exec.setText(_translate("MainWindow", "重新開啟"))
-        
+        self.gb_trigger.setTitle(_translate("MainWindow", "觸發按鍵(無設定則自動使用)"))
 
-    def init_platform_combobox(self):
-        self.combo_platform.addItems(platform_list)
+    def init_config_combobox(self):
+        self.combo_config.addItems(self.main.config_list)
+
+    def enable_edit(self, enable, fonction='all'):
+        if fonction.startswith('a') and enable == False:
+            self.cb_global.setEnabled(enable)
+            self.gb_global.setEnabled(enable)
+            self.gb_flask.setEnabled(enable)
+            self.gb_buff.setEnabled(enable)
+            self.gb_trigger.setEnabled(enable)
+        else:
+            self.cb_global.setEnabled(enable)
+            self.gb_global.setEnabled(not self.cb_global.isChecked())
+            self.gb_flask.setEnabled(not self.cb_global.isChecked())
+            self.gb_buff.setEnabled(not self.cb_global.isChecked())
+            self.gb_trigger.setEnabled(not self.cb_global.isChecked())
+
+    def new_config(self, config_name):
+        self.edit_new_config.setText('')
+        self.enable_edit(True)
+        self.combo_config.addItem(config_name)
 
     def load_setting(self):
-        platform = self.main.from_setting('connect', 'platform', 'str')
-        channel = self.main.from_setting(platform, 'channel', 'str')
-        cover = self.main.from_setting('canvas', 'cover', 'bool')
-        avoid_crosshair = self.main.from_setting('canvas', 'avoid_crosshair', 'bool')
-        # font = self.main.from_setting('barrage', 'font', 'str')
-        size = self.main.from_setting('barrage', 'size', 'str')
-        alpha = self.main.from_setting('barrage', 'alpha', 'int')
-        show_name = self.main.from_setting('barrage', 'name', 'bool')
-        alive_time = self.main.from_setting('barrage', 'alive_time', 'str')
-        twitch_channel_id = self.main.from_setting('twitch', 'channel_id', 'str')
+        config_name = self.main.config_name
+        if config_name == '':
+            self.enable_edit(False)
+        else:
+            global_enable = self.main.from_setting('global', 'enable', 'bool')
+            global_enable_key = self.main.from_setting('global', 'key', 'str')
+            flask_key_list = self.main.from_setting('flask', 'key', 'list')
+            flask_time_list = self.main.from_setting('flask', 'time', 'list')
+            buff_key_list = self.main.from_setting('buff', 'key', 'list')
+            buff_time_list = self.main.from_setting('buff', 'time', 'list')
+            trigger_key_list = self.main.from_setting('trigger', 'key', 'list')
 
-        i = self.combo_platform.findText(platform)
-        self.combo_platform.setCurrentIndex(i)
-        self.edit_channel.setText(channel)
-        # self.edit_font.setText(font)
-        self.edit_size.setText(size)
-        self.edit_time.setText(alive_time)
-        self.sli_alpha.setValue(alpha)
-        self.cb_avoid_crosshair.setChecked(avoid_crosshair)
-        self.cb_on_top.setChecked(cover)
-        self.cb_show_name.setChecked(show_name)
-        self.edit_twitch_id.setText(twitch_channel_id)
+            i = self.combo_config.findText(config_name)
+            self.combo_config.setCurrentIndex(i)
+
+            for i, key in enumerate(flask_key_list):
+                self.edit_flask_key[i].setText(key)
+            for i, Dtime in enumerate(flask_time_list):
+                self.edit_flask_time[i].setText(Dtime)
+            for i, key in enumerate(buff_key_list):
+                self.edit_buff_key[i].setText(key)
+            for i, Dtime in enumerate(buff_time_list):
+                self.edit_buff_time[i].setText(Dtime)
+
+            self.cb_global.setChecked(global_enable)
+            self.edit_global_enable_key.setText(global_enable_key)
+
+            self.enable_edit(True, '')

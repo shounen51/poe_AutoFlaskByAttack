@@ -8,11 +8,27 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-import PyQt5.sip
 
 from configs import *
 
-def load_ini(path):
+def load_ini(config_list):
+    try:
+        with open('./setting.ini', 'r', encoding="utf-8") as file:
+            config = file.readline()
+            if config in config_list:
+                return config
+            else:
+                raise IOError
+    except:
+        with open('./setting.ini', "w", encoding="utf-8") as file:
+            file.write('')
+            return ''
+
+def save_ini(config_name):
+    with open('./setting.ini', 'w', encoding="utf-8") as file:
+        file.write(config_name)
+
+def load_config(path):
     settting={}
     try:
         with open(path, encoding="utf-8") as file:
@@ -35,7 +51,7 @@ def load_ini(path):
         logging.info(default_setting)
         return False, default_setting
 
-def save_ini(path, settting):
+def save_config(path, settting):
     try:
         lines = []
         for major_key in settting.keys():
@@ -50,3 +66,10 @@ def save_ini(path, settting):
     except:
         logging.warning('Save setting failed.')
         return False
+
+def list_ini(root):
+    valueList = []
+    for file in os.listdir(root):
+        if file.split('.')[-1] == 'ini':
+            valueList.append('.'.join(file.split('.')[:-1]))
+    return valueList
