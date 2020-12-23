@@ -22,7 +22,10 @@ class flaskbuff():
         return self.key
 
 class input_listener():
-    def __init__(self):
+    def __init__(self, main):
+        self.start_stop = main.event.btn_start
+        self.is_working = main.is_working
+        self.ui = main.ui
         self.keyboard = keyboard.Controller()
         self.mouse_listener = mouse.Listener(on_move = self.mouse_on_move, on_click = self.mouse_on_click, on_scroll = self.mouse_on_scroll)
         self.keyboard_listener = keyboard.Listener(on_press = self.keyboard_on_press)
@@ -30,11 +33,19 @@ class input_listener():
         self.AUTO = False
         self.MOUSE_MAIN_SCREEN = True
         self.TRIGGER_FLAG = False
+        self.switch_button = ''
         self.trigger_button = []
         self.buff = []
 
-    def load_and_start(self, flask, flask_time, buff, buff_time, trigger):
+    def load_and_start(self, setting):
+        switch = setting['switch']
+        flask = setting['flask_key']
+        flask_time = setting['flask_time']
+        buff = setting['buff_key']
+        buff_time = setting['buff_time']
+        trigger = setting['trigger_key']
         self.buff.clear()
+        self.switch_button = switch
         for i, key in enumerate(flask):
             if flask_time[i] != '':
                 self.buff.append(flaskbuff(key, float(flask_time[i])))
@@ -46,10 +57,6 @@ class input_listener():
             self.AUTO = True
         else:
             self.AUTO = False
-        self.WORKING = True
-
-    def stop(self):
-        self.WORKING = False
 
     def mouse_on_move(self, x, y):
         pass
@@ -64,7 +71,7 @@ class input_listener():
             return
         # print('{0} at {1}'.format('Pressed' if pressed else 'Released', (x, y)))
         # print(button)
-        if pressed and str(button) in self.trigger_button:
+        elif pressed and str(button) in self.trigger_button:
             self.TRIGGER_FLAG = True
 
     def mouse_on_scroll(self, x, y ,dx, dy):
@@ -74,9 +81,11 @@ class input_listener():
         #     (x, y)))
 
     def keyboard_on_press(self, button):
-        if not self.WORKING:
+        if str(button).replace("'",'') == self.switch_button:
+            self.start_stop()
+        elif not self.is_working():
             return
-        if str(button) in self.trigger_button:
+        elif str(button).replace("'",'') in self.trigger_button:
             self.TRIGGER_FLAG = True
 
     def start(self):
@@ -88,7 +97,7 @@ class input_listener():
         self.mouse_listener.start()
         self.keyboard_listener.start()
         while True:
-            if (self.TRIGGER_FLAG or self.AUTO) and self.WORKING:
+            if (self.TRIGGER_FLAG or self.AUTO) and self.is_working():
                 for buff in self.buff:
                     if buff.trigger():
                         self.keyboard.press(buff.press())

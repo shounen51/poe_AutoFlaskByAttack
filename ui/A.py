@@ -28,21 +28,21 @@ class A_form():
 
         self.label_logo = QtWidgets.QLabel(Form)
         self.label_logo.setGeometry(QtCore.QRect(440, 10, 60, 60))
-        # self.label_logo.setStyleSheet('QLabel {background-image : url("./src/51.png")}')
+        self.label_logo.setStyleSheet('QLabel {background-image : url("./src/51.png")}')
         self.label_logo.setObjectName("label_logo")
 
-        self.cb_global = my_cb(Form)
-        self.cb_global.setGeometry(QtCore.QRect(280, 30, 16, 16))
-        self.cb_global.setObjectName("cb_global")
-        self.cb_global.setChecked(False)
+        self.btn_start = my_btn(Form)
+        self.btn_start.setFont(self.font12)
+        self.btn_start.setGeometry(QtCore.QRect(400, 90, 91, 31))
+        self.btn_start.setObjectName("btn_start")
 
         self.gb_global = my_gb(Form)
         self.gb_global.setFont(self.font12)
-        self.gb_global.setGeometry(QtCore.QRect(300, 30, 111, 94))
+        self.gb_global.setGeometry(QtCore.QRect(260, 30, 121, 94))
 
         self.edit_global_enable_key = my_line_edit(self.gb_global)
         self.edit_global_enable_key.setFont(self.font9)
-        self.edit_global_enable_key.setGeometry(QtCore.QRect(10, 30, 91, 51))
+        self.edit_global_enable_key.setGeometry(QtCore.QRect(10, 30, 101, 51))
         self.edit_global_enable_key.setAlignment(Qt.AlignCenter)
 
         self.edit_new_config = my_line_edit(Form)
@@ -134,11 +134,11 @@ class A_form():
         self.event_connect(event)
 
     def event_connect(self, event):
+        self.btn_start.clicked.connect(event.btn_start)
         self.btn_new_config.clicked.connect(event.btn_new_config)
         self.edit_new_config.returnPressed.connect(lambda:self.btn_new_config.click())
         self.combo_config.currentIndexChanged.connect(event.combo_config)
         self.btn_save_config.clicked.connect(event.btn_save_config)
-        self.cb_global.stateChanged.connect(event.cb_global)
 
         # self.edit_channel.editingFinished.connect(event.edit_channel)
         # self.cb_optional.stateChanged.connect(event.cb_optional)
@@ -153,6 +153,7 @@ class A_form():
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("MainWindow", "POE自動喝水 V1.0"))
+        self.btn_start.setText(_translate("MainWindow", "啟動"))
         self.btn_new_config.setText(_translate("MainWindow", "新增設定"))
         self.btn_save_config.setText(_translate("MainWindow", "儲存設定"))
         self.gb_global.setTitle(_translate("MainWindow", "啟用快捷鍵"))
@@ -174,17 +175,17 @@ class A_form():
 
     def enable_edit(self, enable, fonction='all'):
         if fonction.startswith('a') and enable == False:
-            self.cb_global.setEnabled(enable)
+            self.btn_start.setEnabled(enable)
             self.gb_global.setEnabled(enable)
             self.gb_flask.setEnabled(enable)
             self.gb_buff.setEnabled(enable)
             self.gb_trigger.setEnabled(enable)
         else:
-            self.cb_global.setEnabled(enable)
-            self.gb_global.setEnabled(not self.cb_global.isChecked())
-            self.gb_flask.setEnabled(not self.cb_global.isChecked())
-            self.gb_buff.setEnabled(not self.cb_global.isChecked())
-            self.gb_trigger.setEnabled(not self.cb_global.isChecked())
+            self.btn_start.setEnabled(enable)
+            self.gb_global.setEnabled(not self.main.is_working())
+            self.gb_flask.setEnabled(not self.main.is_working())
+            self.gb_buff.setEnabled(not self.main.is_working())
+            self.gb_trigger.setEnabled(not self.main.is_working())
 
     def new_config(self, config_name):
         self.edit_new_config.setText('')

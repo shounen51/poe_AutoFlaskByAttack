@@ -18,20 +18,28 @@ class btn_events():
     def __init__(self, main_window):
         self.main = main_window
 
-    def cb_global(self):
-        self.main.ui.enable_edit(True ,'global')
-
-        if self.main.ui.cb_global.isChecked():
+    def btn_start(self):
+        if not self.main.WORKING:
             self.btn_save_config()
+            switch = self.main.from_setting('global', 'key', 'str')
             flask_key = self.main.from_setting('flask', 'key', 'list')
             flask_time = self.main.from_setting('flask', 'time', 'list')
             buff_key = self.main.from_setting('buff', 'key', 'list')
             buff_time = self.main.from_setting('buff', 'time', 'list')
-            tirgger_key = self.main.from_setting('trigger', 'key', 'list')
-
-            self.main.linstener.load_and_start(flask_key, flask_time, buff_key, buff_time, tirgger_key)
+            trigger_key = self.main.from_setting('trigger', 'key', 'list')
+            setting = {
+                'switch':switch,
+                'flask_key':flask_key,
+                'flask_time':flask_time,
+                'buff_key':buff_key,
+                'buff_time':buff_time,
+                'trigger_key':trigger_key
+            }
+            self.main.start_stop(setting)
         else:
-            self.main.linstener.stop()
+            self.main.start_stop()
+        self.main.ui.enable_edit(True ,'global')
+
 
     def btn_new_config(self):
         file_name = self.main.ui.edit_new_config.text()
@@ -44,14 +52,12 @@ class btn_events():
         self.main.change_config(config_name)
 
     def btn_save_config(self):
-        global_enable = self.main.ui.cb_global.isChecked()
         global_key = self.main.ui.edit_global_enable_key.text()
         flask_key = take_text(self.main.ui.edit_flask_key)
         flask_time = take_text(self.main.ui.edit_flask_time)
         buff_key = take_text(self.main.ui.edit_buff_key)
         buff_time = take_text(self.main.ui.edit_buff_time)
         trigger = take_text(self.main.ui.edit_trigger_key)
-        self.main.modfy_setting('global', 'enable', global_enable)
         self.main.modfy_setting('global', 'key', global_key)
         self.main.modfy_setting('flask', 'key', flask_key)
         self.main.modfy_setting('flask', 'time', flask_time)
