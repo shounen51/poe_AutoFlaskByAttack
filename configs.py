@@ -1,6 +1,5 @@
 default_setting = {
     'global':{
-        'enable':'False',
         'key':''
     },
     'flask':{
@@ -12,6 +11,6 @@ default_setting = {
         'time':'[,,,,]'
     },
     'trigger':{
-        'key':'[,,,,]'
+        'key':'[,,]'
     }
 }

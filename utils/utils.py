@@ -51,13 +51,13 @@ def load_config(path):
         logging.info(default_setting)
         return False, default_setting
 
-def save_config(path, settting):
+def save_config(path, setting):
     try:
         lines = []
-        for major_key in settting.keys():
+        for major_key in setting.keys():
             lines.append('[' + major_key + ']\n')
-            for detail_key in settting[major_key].keys():
-                lines.append(detail_key + '=' + settting[major_key][detail_key] + '\n')
+            for detail_key in setting[major_key].keys():
+                lines.append(detail_key + '=' + setting[major_key][detail_key] + '\n')
             lines.append('\n')
         with open(path, "w", encoding="utf-8") as file:
             file.writelines(lines)

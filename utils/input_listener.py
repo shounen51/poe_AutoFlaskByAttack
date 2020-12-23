@@ -1,0 +1,104 @@
+import threading
+import time
+
+from pynput import mouse
+from pynput import keyboard
+
+class flaskbuff():
+    def __init__(self, key, cdt):
+        self.key = key
+        self.cdt = cdt
+        self.trigger_time = 0
+
+    def trigger(self):
+        trigger_time = time.time()
+        if trigger_time - self.trigger_time > self.cdt: # not using
+            self.trigger_time = trigger_time
+            return True
+        else:
+            return False
+
+    def press(self):
+        return self.key
+
+class input_listener():
+    def __init__(self):
+        self.keyboard = keyboard.Controller()
+        self.mouse_listener = mouse.Listener(on_move = self.mouse_on_move, on_click = self.mouse_on_click, on_scroll = self.mouse_on_scroll)
+        self.keyboard_listener = keyboard.Listener(on_press = self.keyboard_on_press)
+        self.WORKING = False
+        self.AUTO = False
+        self.MOUSE_MAIN_SCREEN = True
+        self.TRIGGER_FLAG = False
+        self.trigger_button = []
+        self.buff = []
+
+    def load_and_start(self, flask, flask_time, buff, buff_time, trigger):
+        self.buff.clear()
+        for i, key in enumerate(flask):
+            if flask_time[i] != '':
+                self.buff.append(flaskbuff(key, float(flask_time[i])))
+        for i, key in enumerate(buff):
+            if buff_time[i] != '':
+                self.buff.append(flaskbuff(key, float(buff_time[i])))
+        self.trigger_button = trigger
+        if trigger == ['','','']:
+            self.AUTO = True
+        else:
+            self.AUTO = False
+        self.WORKING = True
+
+    def stop(self):
+        self.WORKING = False
+
+    def mouse_on_move(self, x, y):
+        pass
+        # if x > 1920:
+        #     self.MOUSE_MAIN_SCREEN = False
+        # else:
+        #     self.MOUSE_MAIN_SCREEN = True
+
+
+    def mouse_on_click(self, x, y , button, pressed):
+        if not self.WORKING:
+            return
+        # print('{0} at {1}'.format('Pressed' if pressed else 'Released', (x, y)))
+        # print(button)
+        if pressed and str(button) in self.trigger_button:
+            self.TRIGGER_FLAG = True
+
+    def mouse_on_scroll(self, x, y ,dx, dy):
+        pass
+        # print('scrolled {0} at {1}'.format(
+        #     'down' if dy < 0 else 'up',
+        #     (x, y)))
+
+    def keyboard_on_press(self, button):
+        if not self.WORKING:
+            return
+        if str(button) in self.trigger_button:
+            self.TRIGGER_FLAG = True
+
+    def start(self):
+        self.t = threading.Thread(target=self.run, )
+        self.t.setDaemon(True)
+        self.t.start()
+
+    def run(self):
+        self.mouse_listener.start()
+        self.keyboard_listener.start()
+        while True:
+            if (self.TRIGGER_FLAG or self.AUTO) and self.WORKING:
+                for buff in self.buff:
+                    if buff.trigger():
+                        self.keyboard.press(buff.press())
+                self.TRIGGER_FLAG = False
+            time.sleep(0.05)
+
+    def join(self):
+        self.t.join()
+
+if __name__=='__main__':
+    a = input_listener()
+    a.start()
+    a.join()

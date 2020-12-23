@@ -11,10 +11,10 @@ class A_form():
     def __init__(self, Form, event):
         self.main = Form
         Form.setObjectName("MainWindow")
-        Form.resize(511, 719)
+        Form.resize(511, 700)
         Form.setStyleSheet('QMainWindow {background-color: #242424; color: #E6E6E6;}')
-        Form.setMinimumSize(QtCore.QSize(511, 719))
-        Form.setMaximumSize(QtCore.QSize(511, 719))
+        Form.setMinimumSize(QtCore.QSize(511, 700))
+        Form.setMaximumSize(QtCore.QSize(511, 700))
         self.font36 = QtGui.QFont('微軟正黑體', 36)
         self.font16 = QtGui.QFont('微軟正黑體', 16)
         self.font12 = QtGui.QFont('微軟正黑體', 12)
@@ -34,7 +34,7 @@ class A_form():
         self.cb_global = my_cb(Form)
         self.cb_global.setGeometry(QtCore.QRect(280, 30, 16, 16))
         self.cb_global.setObjectName("cb_global")
-        self.cb_global.setChecked(True)
+        self.cb_global.setChecked(False)
 
         self.gb_global = my_gb(Form)
         self.gb_global.setFont(self.font12)
@@ -113,16 +113,16 @@ class A_form():
             _edit.setValidator(QDoubleValidator())
             self.edit_buff_time.append(_edit)
 
+        """ trigger """
         self.gb_trigger = my_gb(Form)
         self.gb_trigger.setFont(self.font12)
-        self.gb_trigger.setGeometry(QtCore.QRect(40, 550, 431, 161))
+        self.gb_trigger.setGeometry(QtCore.QRect(40, 550, 431, 121))
 
-        """ trigger """
         self.edit_trigger_key = []
-        for i in range(5):
+        for i in range(3):
             _edit = my_line_edit(self.gb_trigger)
-            _edit.setFont(self.font36)
-            _edit.setGeometry(QtCore.QRect(30 + 80*i, 30, 51, 71))
+            _edit.setFont(self.font16)
+            _edit.setGeometry(QtCore.QRect(30 + 130*i, 30, 111, 71))
             _edit.setAlignment(Qt.AlignCenter)
             self.edit_trigger_key.append(_edit)
 
@@ -138,7 +138,7 @@ class A_form():
         self.edit_new_config.returnPressed.connect(lambda:self.btn_new_config.click())
         self.combo_config.currentIndexChanged.connect(event.combo_config)
         self.btn_save_config.clicked.connect(event.btn_save_config)
-        self.cb_global.stateChanged.connect(lambda:self.enable_edit(True ,'global'))
+        self.cb_global.stateChanged.connect(event.cb_global)
 
         # self.edit_channel.editingFinished.connect(event.edit_channel)
         # self.cb_optional.stateChanged.connect(event.cb_optional)
@@ -196,7 +196,6 @@ class A_form():
         if config_name == '':
             self.enable_edit(False)
         else:
-            global_enable = self.main.from_setting('global', 'enable', 'bool')
             global_enable_key = self.main.from_setting('global', 'key', 'str')
             flask_key_list = self.main.from_setting('flask', 'key', 'list')
             flask_time_list = self.main.from_setting('flask', 'time', 'list')
@@ -216,7 +215,6 @@ class A_form():
             for i, Dtime in enumerate(buff_time_list):
                 self.edit_buff_time[i].setText(Dtime)
 
-            self.cb_global.setChecked(global_enable)
             self.edit_global_enable_key.setText(global_enable_key)
 
             self.enable_edit(True, '')

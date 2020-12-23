@@ -18,6 +18,21 @@ class btn_events():
     def __init__(self, main_window):
         self.main = main_window
 
+    def cb_global(self):
+        self.main.ui.enable_edit(True ,'global')
+
+        if self.main.ui.cb_global.isChecked():
+            self.btn_save_config()
+            flask_key = self.main.from_setting('flask', 'key', 'list')
+            flask_time = self.main.from_setting('flask', 'time', 'list')
+            buff_key = self.main.from_setting('buff', 'key', 'list')
+            buff_time = self.main.from_setting('buff', 'time', 'list')
+            tirgger_key = self.main.from_setting('trigger', 'key', 'list')
+
+            self.main.linstener.load_and_start(flask_key, flask_time, buff_key, buff_time, tirgger_key)
+        else:
+            self.main.linstener.stop()
+
     def btn_new_config(self):
         file_name = self.main.ui.edit_new_config.text()
         if file_name == '' or file_name in self.main.config_list:

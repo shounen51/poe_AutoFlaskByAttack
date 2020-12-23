@@ -25,6 +25,7 @@ from PyQt5.QtWidgets import *
 
 from ui.A import A_form
 from utils.button_event import btn_events
+from utils.input_listener import input_listener
 from utils.utils import load_config, save_config, load_ini, save_ini, list_ini
 from configs import default_setting
 
@@ -35,6 +36,8 @@ class MainWindow(QMainWindow):
         self.config_name = load_ini(self.config_list)
         OK, self.setting = load_config(f"./configs/{self.config_name}.ini")
         self.event = btn_events(self)
+        self.linstener = input_listener()
+        self.linstener.start()
         self.ui = A_form(self, self.event)
 
     def new_config(self, config_name):
@@ -75,7 +78,10 @@ class MainWindow(QMainWindow):
 
     def modfy_setting(self, major_key, detail_key, value):
         if type(value) == list:
-            self.setting[major_key][detail_key] = str(value).replace("'", '')
+            v = '['
+            v += ','.join(value)
+            v += ']'
+            self.setting[major_key][detail_key] = v
         else:
             self.setting[major_key][detail_key] = str(value)
 
