@@ -29,7 +29,7 @@ class input_listener():
         self.ui = getattr(main, 'ui')
         self.keyboard = keyboard.Controller()
         self.mouse_listener = mouse.Listener(on_move = self.mouse_on_move, on_click = self.mouse_on_click, on_scroll = self.mouse_on_scroll)
-        self.keyboard_listener = keyboard.Listener(on_press = self.keyboard_on_press, on_release=self.keyboard_on_release)
+        self.keyboard_listener = keyboard.Listener(on_press = self.keyboard_on_press, on_release = self.keyboard_on_release)
         self.AUTO = False
         self.MOUSE_MAIN_SCREEN = True
         self.TRIGGER_FLAG = False
@@ -113,6 +113,7 @@ class input_listener():
             self.TRIGGER_FLAG = True
 
     def keyboard_on_release(self, button):
+        button = self.button_regularization(button)
         if not self.is_working():
             return
         elif button in self.trigger_button:

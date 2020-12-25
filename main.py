@@ -23,6 +23,7 @@ import traceback
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+import PyQt5.sip
 
 from ui.A import A_form
 from utils.button_event import btn_events
@@ -33,6 +34,9 @@ from configs import default_setting
 class MainWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
+        myicon = QIcon()
+        myicon.addPixmap(QPixmap("src/icon.ico"), QIcon.Normal, QIcon.Off)
+        self.setWindowIcon(myicon)
         self.SETTING = False
         self.is_setting = lambda: self.SETTING
         self.WORKING = False
