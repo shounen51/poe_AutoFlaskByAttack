@@ -3,6 +3,8 @@
 
 del是刪除設定，esc是取消設定狀態
 
+[點此從專案中下載](https://github.com/shounen51/poe_AutoFlaskByAttack/releases/download/1.0/poe.auto.zip)
+
 按鍵不可設定:
 ```
 esc
