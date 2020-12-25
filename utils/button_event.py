@@ -30,7 +30,9 @@ class btn_events():
             return
         elif self.main.is_setting():
             key = self.main.linstener.get_last()
-            if key != 'esc':
+            if key == 'delete':
+                edit.setText('')
+            elif key != 'esc':
                 edit.setText(str(key))
             edit.clearFocus()
         else:
