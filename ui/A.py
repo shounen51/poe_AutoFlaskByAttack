@@ -25,7 +25,7 @@ class A_form():
         self.label_main.setStyleSheet('QLabel {background-image : url("./src/flask.png")}')
         self.label_main.setObjectName("label_main")
 
-        self.label_logo = QtWidgets.QLabel(Form)
+        self.label_logo = clickable_label(Form, event)
         self.label_logo.setGeometry(QtCore.QRect(440, 10, 60, 60))
         self.label_logo.setStyleSheet('QLabel {background-image : url("./src/51.png")}')
         self.label_logo.setObjectName("label_logo")
@@ -39,10 +39,11 @@ class A_form():
         self.gb_global.setFont(self.font12)
         self.gb_global.setGeometry(QtCore.QRect(260, 30, 121, 94))
 
-        self.edit_global_enable_key = my_line_edit(self.gb_global)
+        self.edit_global_enable_key = focus_line_edit(self.gb_global, event)
         self.edit_global_enable_key.setFont(self.font9)
         self.edit_global_enable_key.setGeometry(QtCore.QRect(10, 30, 101, 51))
         self.edit_global_enable_key.setAlignment(Qt.AlignCenter)
+        self.edit_global_enable_key.setReadOnly(True)
 
         self.edit_new_config = my_line_edit(Form)
         self.edit_new_config.setFont(self.font12)
@@ -75,10 +76,11 @@ class A_form():
 
         self.edit_flask_key = []
         for i in range(5):
-            _edit = my_line_edit(self.gb_flask)
+            _edit = focus_line_edit(self.gb_flask, event)
             _edit.setFont(self.font36)
             _edit.setGeometry(QtCore.QRect(30 + 80*i, 30, 51, 71))
             _edit.setAlignment(Qt.AlignCenter)
+            _edit.setReadOnly(True)
             self.edit_flask_key.append(_edit)
 
         self.edit_flask_time = []
@@ -97,10 +99,11 @@ class A_form():
 
         self.edit_buff_key = []
         for i in range(5):
-            _edit = my_line_edit(self.gb_buff)
+            _edit = focus_line_edit(self.gb_buff, event)
             _edit.setFont(self.font36)
             _edit.setGeometry(QtCore.QRect(30 + 80*i, 30, 51, 71))
             _edit.setAlignment(Qt.AlignCenter)
+            _edit.setReadOnly(True)
             self.edit_buff_key.append(_edit)
 
         self.edit_buff_time = []
@@ -119,10 +122,11 @@ class A_form():
 
         self.edit_trigger_key = []
         for i in range(3):
-            _edit = my_line_edit(self.gb_trigger)
+            _edit = focus_line_edit(self.gb_trigger, event)
             _edit.setFont(self.font16)
             _edit.setGeometry(QtCore.QRect(30 + 130*i, 30, 111, 71))
             _edit.setAlignment(Qt.AlignCenter)
+            _edit.setReadOnly(True)
             self.edit_trigger_key.append(_edit)
 
         """ not ui """
@@ -138,7 +142,6 @@ class A_form():
         self.edit_new_config.returnPressed.connect(lambda:self.btn_new_config.click())
         self.combo_config.currentIndexChanged.connect(event.combo_config)
         self.btn_save_config.clicked.connect(event.btn_save_config)
-
         # self.edit_channel.editingFinished.connect(event.edit_channel)
         # self.cb_optional.stateChanged.connect(event.cb_optional)
         # self.cb_on_top.stateChanged.connect(event.cb_on_top)
@@ -155,7 +158,7 @@ class A_form():
         self.btn_start.setText(_translate("MainWindow", "啟動"))
         self.btn_new_config.setText(_translate("MainWindow", "新增設定"))
         self.btn_save_config.setText(_translate("MainWindow", "儲存設定"))
-        self.gb_global.setTitle(_translate("MainWindow", "啟用快捷鍵"))
+        self.gb_global.setTitle(_translate("MainWindow", "啟動快捷鍵"))
         self.edit_global_enable_key.setPlaceholderText(_translate("MainWindow", "shift"))
         self.edit_new_config.setPlaceholderText(_translate("MainWindow", "設定檔名稱"))
 

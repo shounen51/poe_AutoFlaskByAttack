@@ -20,9 +20,24 @@ class clickable_label(QLabel):
         self.setStyleSheet('QLabel {background-color: #000000; color: #E6E6E6;}')
     def mousePressEvent(self, e):
         if e.buttons() == Qt.LeftButton:
-            self.event.label_click()
-        elif e.buttons() == Qt.RightButton:
-            self.event.del_click()
+            self.event.logo_click()
+
+class focus_line_edit(QLineEdit):
+    def __init__(self, parent, event):
+        QLineEdit.__init__(self, parent)
+        self.event = event
+        self.setStyleSheet('QLineEdit {background-color: #000000; color: #E6E6E6;}')
+        self.setFocusPolicy(Qt.ClickFocus)
+        self.setContextMenuPolicy(Qt.NoContextMenu)
+
+    def focusOutEvent(self, e):
+        self.event.focus_out(self)
+    def keyPressEvent(self,e):
+        if e.key() in [16777234, 16777235, 16777236, 16777237]:
+            return
+        self.event.input_in(self)
+    def mousePressEvent(self, e):
+        self.event.input_in(self)
 
 class my_ComboBox(QComboBox):
     def __init__(self, parent):
@@ -48,6 +63,8 @@ class my_line_edit(QLineEdit):
     def __init__(self, parent):
         QLineEdit.__init__(self, parent)
         self.setStyleSheet('QLineEdit {background-color: #000000; color: #E6E6E6;}')
+        self.setFocusPolicy(Qt.ClickFocus)
+        self.setContextMenuPolicy(Qt.NoContextMenu)
 
 class my_label(QLabel):
     def __init__(self, parent):

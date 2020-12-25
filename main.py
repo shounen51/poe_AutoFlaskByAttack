@@ -18,6 +18,7 @@ import os
 import sys
 import time
 import logging
+import traceback
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -32,6 +33,8 @@ from configs import default_setting
 class MainWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
+        self.SETTING = False
+        self.is_setting = lambda: self.SETTING
         self.WORKING = False
         self.is_working = lambda: self.WORKING
         self.config_list = list_ini('./configs')
@@ -41,6 +44,9 @@ class MainWindow(QMainWindow):
         self.ui = A_form(self, self.event)
         self.linstener = input_listener(self)
         self.linstener.start()
+
+    def setting_key(self, setting):
+        self.SETTING=setting
 
     def start_stop(self, setting={}):
         if not self.WORKING:
@@ -106,8 +112,18 @@ if __name__ == "__main__":
                     format='%(asctime)s [%(levelname)s] %(message)s',
                     datefmt='%Y-%m-%d %H:%M',
                     handlers=[logging.FileHandler('log/last.log', 'w', 'utf-8'), ])
-
-    app = QApplication(sys.argv)
-    win = MainWindow()
-    win.show()
-    sys.exit(app.exec_())
+    try:
+        app = QApplication(sys.argv)
+        win = MainWindow()
+        win.show()
+        sys.exit(app.exec_())
+    except Exception as e:
+        error_class = e.__class__.__name__ #取得錯誤類型
+        detail = e.args[0] #取得詳細內容
+        cl, exc, tb = sys.exc_info() #取得Call Stack
+        lastCallStack = traceback.extract_tb(tb)[-1] #取得Call Stack的最後一筆資料
+        fileName = lastCallStack[0] #取得發生的檔案名稱
+        lineNum = lastCallStack[1] #取得發生的行號
+        funcName = lastCallStack[2] #取得發生的函數名稱
+        errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
+        logging.error(errMsg)

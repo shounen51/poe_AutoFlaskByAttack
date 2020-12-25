@@ -24,17 +24,27 @@ class flaskbuff():
 class input_listener():
     def __init__(self, main):
         self.start_stop = main.event.btn_start
-        self.is_working = main.is_working
-        self.ui = main.ui
+        self.is_working = getattr(main, 'is_working')
+        self.is_setting = getattr(main, 'is_setting')
+        self.ui = getattr(main, 'ui')
         self.keyboard = keyboard.Controller()
         self.mouse_listener = mouse.Listener(on_move = self.mouse_on_move, on_click = self.mouse_on_click, on_scroll = self.mouse_on_scroll)
         self.keyboard_listener = keyboard.Listener(on_press = self.keyboard_on_press, on_release=self.keyboard_on_release)
         self.AUTO = False
         self.MOUSE_MAIN_SCREEN = True
         self.TRIGGER_FLAG = False
+        self.last_button = ''
         self.switch_button = ''
         self.trigger_button = []
         self.buff = []
+
+    def button_regularization(self, btn):
+        return str(btn).split('.')[-1].replace("'",'')
+
+    def get_last(self):
+        _temp = self.last_button
+        self.last_button = ''
+        return _temp
 
     def load_and_start(self, setting):
         switch = setting['switch']
@@ -66,11 +76,17 @@ class input_listener():
 
 
     def mouse_on_click(self, x, y , button, pressed):
-        if not self.is_working():
+        button = self.button_regularization(button)
+        if self.is_setting():
+            self.last_button = button
+        elif button == self.trigger_button and pressed:
+            self.TRIGGER_FLAG = False
+            self.start_stop()
+        elif not self.is_working():
             return
         # print('{0} at {1}'.format('Pressed' if pressed else 'Released', (x, y)))
         # print(button)
-        elif str(button) in self.trigger_button:
+        elif button in self.trigger_button:
             if pressed:
                 self.TRIGGER_FLAG = True
             else:
@@ -78,23 +94,28 @@ class input_listener():
 
     def mouse_on_scroll(self, x, y ,dx, dy):
         pass
-        # print('scrolled {0} at {1}'.format(
+        # print('scrolled {0} at {1}'.format(qw
         #     'down' if dy < 0 else 'up',
         #     (x, y)))
 
     def keyboard_on_press(self, button):
-        if str(button).replace("'",'') == self.switch_button:
+        button = self.button_regularization(button)
+        if button in ['up', 'down', 'left', 'right']:
+            return
+        elif self.is_setting():
+            self.last_button = button
+        elif button == self.switch_button:
             self.TRIGGER_FLAG = False
             self.start_stop()
         elif not self.is_working():
             return
-        elif str(button).replace("'",'') in self.trigger_button:
+        elif button in self.trigger_button:
             self.TRIGGER_FLAG = True
 
     def keyboard_on_release(self, button):
         if not self.is_working():
             return
-        elif str(button).replace("'",'') in self.trigger_button:
+        elif button in self.trigger_button:
             self.TRIGGER_FLAG = False
 
     def start(self):
@@ -115,8 +136,3 @@ class input_listener():
 
     def join(self):
         self.t.join()
-
-if __name__=='__main__':
-    a = input_listener()
-    a.start()
-    a.join()

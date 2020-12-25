@@ -1,9 +1,2 @@
-setuptools
-aiohttp==3.7.0
-discord
-twitchio==1.1.0
-pillow
-requests
 pyqt5
-pywin32==227
-pytchat
+pynput
