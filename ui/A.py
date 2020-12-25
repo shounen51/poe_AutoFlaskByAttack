@@ -3,7 +3,6 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-import PyQt5.sip
 from ui.my_widgets import *
 from configs import default_setting
 
@@ -215,6 +214,8 @@ class A_form():
                 self.edit_buff_key[i].setText(key)
             for i, Dtime in enumerate(buff_time_list):
                 self.edit_buff_time[i].setText(Dtime)
+            for i, key in enumerate(trigger_key_list):
+                self.edit_trigger_key[i].setText(key)
 
             self.edit_global_enable_key.setText(global_enable_key)
 

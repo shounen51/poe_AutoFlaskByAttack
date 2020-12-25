@@ -28,8 +28,7 @@ class input_listener():
         self.ui = main.ui
         self.keyboard = keyboard.Controller()
         self.mouse_listener = mouse.Listener(on_move = self.mouse_on_move, on_click = self.mouse_on_click, on_scroll = self.mouse_on_scroll)
-        self.keyboard_listener = keyboard.Listener(on_press = self.keyboard_on_press)
-        self.WORKING = False
+        self.keyboard_listener = keyboard.Listener(on_press = self.keyboard_on_press, on_release=self.keyboard_on_release)
         self.AUTO = False
         self.MOUSE_MAIN_SCREEN = True
         self.TRIGGER_FLAG = False
@@ -67,12 +66,15 @@ class input_listener():
 
 
     def mouse_on_click(self, x, y , button, pressed):
-        if not self.WORKING:
+        if not self.is_working():
             return
         # print('{0} at {1}'.format('Pressed' if pressed else 'Released', (x, y)))
         # print(button)
-        elif pressed and str(button) in self.trigger_button:
-            self.TRIGGER_FLAG = True
+        elif str(button) in self.trigger_button:
+            if pressed:
+                self.TRIGGER_FLAG = True
+            else:
+                self.TRIGGER_FLAG = False
 
     def mouse_on_scroll(self, x, y ,dx, dy):
         pass
@@ -82,11 +84,18 @@ class input_listener():
 
     def keyboard_on_press(self, button):
         if str(button).replace("'",'') == self.switch_button:
+            self.TRIGGER_FLAG = False
             self.start_stop()
         elif not self.is_working():
             return
         elif str(button).replace("'",'') in self.trigger_button:
             self.TRIGGER_FLAG = True
+
+    def keyboard_on_release(self, button):
+        if not self.is_working():
+            return
+        elif str(button).replace("'",'') in self.trigger_button:
+            self.TRIGGER_FLAG = False
 
     def start(self):
         self.t = threading.Thread(target=self.run, )
@@ -101,7 +110,7 @@ class input_listener():
                 for buff in self.buff:
                     if buff.trigger():
                         self.keyboard.press(buff.press())
-                self.TRIGGER_FLAG = False
+                        self.keyboard.release(buff.press())
             time.sleep(0.05)
 
     def join(self):
