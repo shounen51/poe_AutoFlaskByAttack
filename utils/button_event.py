@@ -32,8 +32,24 @@ class btn_events():
             key = self.main.linstener.get_last()
             if key == 'delete':
                 edit.setText('')
+                if edit.type.startswith('f'):
+                    self.main.ui.edit_flask_time[edit.index].setText('')
+                    self.main.ui.edit_flask_time[edit.index].setEnabled(False)
+                elif edit.type.startswith('b'):
+                    self.main.ui.edit_buff_time[edit.index].setText('')
+                    self.main.ui.edit_buff_time[edit.index].setEnabled(False)
             elif key != 'esc':
-                edit.setText(str(key))
+                if edit.type.startswith('f'):
+                    if len(key) == 1:
+                        self.main.ui.edit_flask_time[edit.index].setEnabled(True)
+                    else:
+                        return
+                elif edit.type.startswith('b'):
+                    if len(key) == 1:
+                        self.main.ui.edit_buff_time[edit.index].setEnabled(True)
+                    else:
+                        return
+                edit.setText(key)
             edit.clearFocus()
         else:
             edit.setStyleSheet('QLineEdit {background-color: #600000; color: #E6E6E6;}')
@@ -86,6 +102,10 @@ class btn_events():
         self.main.modfy_setting('buff', 'time', buff_time)
         self.main.modfy_setting('trigger', 'key', trigger)
         save_config(f"./configs/{self.main.config_name}.ini", self.main.setting)
+
+    def time_edited(self, edit):
+        if float(edit.text()) < 0.1:
+            edit.setText('0.1')
 
     def logo_click(self):
         self.browser.open_new_tab('https://github.com/shounen51/poe_AutoFlaskByAttack')

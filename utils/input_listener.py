@@ -41,6 +41,15 @@ class input_listener():
     def button_regularization(self, btn):
         return str(btn).split('.')[-1].replace("'",'')
 
+    def button_unregularization(self, btn):
+        if len(btn) > 1:
+            if btn in ['left', 'right', 'x1', 'x2', 'middle']:
+                return 'Button.' + btn
+            else:
+                return 'Key.' + btn
+        else:
+            return btn
+
     def get_last(self):
         _temp = self.last_button
         self.last_button = ''
@@ -120,7 +129,7 @@ class input_listener():
             self.TRIGGER_FLAG = False
 
     def start(self):
-        self.t = threading.Thread(target=self.run, )
+        self.t = threading.Thread(target=self.run,)
         self.t.setDaemon(True)
         self.t.start()
 
@@ -131,8 +140,8 @@ class input_listener():
             if (self.TRIGGER_FLAG or self.AUTO) and self.is_working():
                 for buff in self.buff:
                     if buff.trigger():
-                        self.keyboard.press(buff.press())
-                        self.keyboard.release(buff.press())
+                        self.keyboard.press(self.button_unregularization(buff.press()))
+                        self.keyboard.release(self.button_unregularization(buff.press()))
             time.sleep(0.05)
 
     def join(self):

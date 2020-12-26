@@ -23,8 +23,10 @@ class clickable_label(QLabel):
             self.event.logo_click()
 
 class focus_line_edit(QLineEdit):
-    def __init__(self, parent, event):
+    def __init__(self, parent, event, _type, index):
         QLineEdit.__init__(self, parent)
+        self.type = _type
+        self.index = index
         self.event = event
         self.setStyleSheet('QLineEdit {background-color: #000000; color: #E6E6E6;}')
         self.setFocusPolicy(Qt.ClickFocus)
@@ -65,6 +67,7 @@ class my_line_edit(QLineEdit):
         self.setStyleSheet('QLineEdit {background-color: #000000; color: #E6E6E6;}')
         self.setFocusPolicy(Qt.ClickFocus)
         self.setContextMenuPolicy(Qt.NoContextMenu)
+
 
 class my_label(QLabel):
     def __init__(self, parent):

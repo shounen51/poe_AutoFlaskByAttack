@@ -39,7 +39,7 @@ class A_form():
         self.gb_global.setFont(self.font12)
         self.gb_global.setGeometry(QtCore.QRect(260, 30, 121, 94))
 
-        self.edit_global_enable_key = focus_line_edit(self.gb_global, event)
+        self.edit_global_enable_key = focus_line_edit(self.gb_global, event, 'global', 0)
         self.edit_global_enable_key.setFont(self.font9)
         self.edit_global_enable_key.setGeometry(QtCore.QRect(10, 30, 101, 51))
         self.edit_global_enable_key.setAlignment(Qt.AlignCenter)
@@ -76,7 +76,7 @@ class A_form():
 
         self.edit_flask_key = []
         for i in range(5):
-            _edit = focus_line_edit(self.gb_flask, event)
+            _edit = focus_line_edit(self.gb_flask, event, 'flask', i)
             _edit.setFont(self.font36)
             _edit.setGeometry(QtCore.QRect(30 + 80*i, 30, 51, 71))
             _edit.setAlignment(Qt.AlignCenter)
@@ -99,7 +99,7 @@ class A_form():
 
         self.edit_buff_key = []
         for i in range(5):
-            _edit = focus_line_edit(self.gb_buff, event)
+            _edit = focus_line_edit(self.gb_buff, event, 'buff', i)
             _edit.setFont(self.font36)
             _edit.setGeometry(QtCore.QRect(30 + 80*i, 30, 51, 71))
             _edit.setAlignment(Qt.AlignCenter)
@@ -122,7 +122,7 @@ class A_form():
 
         self.edit_trigger_key = []
         for i in range(3):
-            _edit = focus_line_edit(self.gb_trigger, event)
+            _edit = focus_line_edit(self.gb_trigger, event, 'trigger', i)
             _edit.setFont(self.font16)
             _edit.setGeometry(QtCore.QRect(30 + 130*i, 30, 111, 71))
             _edit.setAlignment(Qt.AlignCenter)
@@ -142,7 +142,16 @@ class A_form():
         self.edit_new_config.returnPressed.connect(lambda:self.btn_new_config.click())
         self.combo_config.currentIndexChanged.connect(event.combo_config)
         self.btn_save_config.clicked.connect(event.btn_save_config)
-        # self.edit_channel.editingFinished.connect(event.edit_channel)
+        self.edit_flask_time[0].editingFinished.connect(lambda:event.time_edited(self.edit_flask_time[0]))
+        self.edit_flask_time[1].editingFinished.connect(lambda:event.time_edited(self.edit_flask_time[1]))
+        self.edit_flask_time[2].editingFinished.connect(lambda:event.time_edited(self.edit_flask_time[2]))
+        self.edit_flask_time[3].editingFinished.connect(lambda:event.time_edited(self.edit_flask_time[3]))
+        self.edit_flask_time[4].editingFinished.connect(lambda:event.time_edited(self.edit_flask_time[4]))
+        self.edit_buff_time[0].editingFinished.connect(lambda:event.time_edited(self.edit_buff_time[0]))
+        self.edit_buff_time[1].editingFinished.connect(lambda:event.time_edited(self.edit_buff_time[1]))
+        self.edit_buff_time[2].editingFinished.connect(lambda:event.time_edited(self.edit_buff_time[2]))
+        self.edit_buff_time[3].editingFinished.connect(lambda:event.time_edited(self.edit_buff_time[3]))
+        self.edit_buff_time[4].editingFinished.connect(lambda:event.time_edited(self.edit_buff_time[4]))
         # self.cb_optional.stateChanged.connect(event.cb_optional)
         # self.cb_on_top.stateChanged.connect(event.cb_on_top)
         # self.cb_avoid_crosshair.stateChanged.connect(event.cb_avoid_crosshair)
@@ -154,12 +163,12 @@ class A_form():
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("MainWindow", "POE自動喝水 V1.0"))
+        Form.setWindowTitle(_translate("MainWindow", "POE自動喝水 V1.1"))
         self.btn_start.setText(_translate("MainWindow", "啟動"))
         self.btn_new_config.setText(_translate("MainWindow", "新增設定"))
         self.btn_save_config.setText(_translate("MainWindow", "儲存設定"))
         self.gb_global.setTitle(_translate("MainWindow", "啟動快捷鍵"))
-        self.edit_global_enable_key.setPlaceholderText(_translate("MainWindow", "shift"))
+        self.edit_global_enable_key.setPlaceholderText(_translate("MainWindow", "f2"))
         self.edit_new_config.setPlaceholderText(_translate("MainWindow", "設定檔名稱"))
 
         self.gb_flask.setTitle(_translate("MainWindow", "藥水按鍵與持續時間"))
@@ -178,12 +187,14 @@ class A_form():
     def enable_edit(self, enable, fonction='all'):
         if fonction.startswith('a') and enable == False:
             self.btn_start.setEnabled(enable)
+            self.combo_config.setEnabled(enable)
             self.gb_global.setEnabled(enable)
             self.gb_flask.setEnabled(enable)
             self.gb_buff.setEnabled(enable)
             self.gb_trigger.setEnabled(enable)
         else:
             self.btn_start.setEnabled(enable)
+            self.combo_config.setEnabled(not self.main.is_working())
             self.gb_global.setEnabled(not self.main.is_working())
             self.gb_flask.setEnabled(not self.main.is_working())
             self.gb_buff.setEnabled(not self.main.is_working())
@@ -211,10 +222,14 @@ class A_form():
 
             for i, key in enumerate(flask_key_list):
                 self.edit_flask_key[i].setText(key)
+                if key == '':
+                    self.edit_flask_time[i].setEnabled(False)
             for i, Dtime in enumerate(flask_time_list):
                 self.edit_flask_time[i].setText(Dtime)
             for i, key in enumerate(buff_key_list):
                 self.edit_buff_key[i].setText(key)
+                if key == '':
+                    self.edit_buff_time[i].setEnabled(False)
             for i, Dtime in enumerate(buff_time_list):
                 self.edit_buff_time[i].setText(Dtime)
             for i, key in enumerate(trigger_key_list):
