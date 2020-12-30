@@ -28,6 +28,7 @@ import PyQt5.sip
 from ui.A import A_form
 from utils.button_event import btn_events
 from utils.input_listener import input_listener
+from utils.poe_detector import poe_detector
 from utils.utils import load_config, save_config, load_ini, save_ini, list_ini
 from configs import default_setting
 
@@ -37,10 +38,15 @@ class MainWindow(QMainWindow):
         myicon = QIcon()
         myicon.addPixmap(QPixmap("src/icon.ico"), QIcon.Normal, QIcon.Off)
         self.setWindowIcon(myicon)
+        self.PLAYING = False
+        self.detector = poe_detector(self)
+        self.detector.playing_signal.connect(self.set_playing)
+        self.detector.start()
         self.SETTING = False
         self.is_setting = lambda: self.SETTING
         self.WORKING = False
-        self.is_working = lambda: self.WORKING
+        self.is_working = lambda: self.WORKING and self.detector.check_immediately()
+        self.is_editOK = lambda: not self.WORKING
         self.config_list = list_ini('./configs')
         self.config_name = load_ini(self.config_list)
         OK, self.setting = load_config(f"./configs/{self.config_name}.ini")
@@ -55,10 +61,21 @@ class MainWindow(QMainWindow):
     def start_stop(self, setting={}):
         if not self.WORKING:
             self.linstener.load_and_start(setting)
-            self.ui.btn_start.setStyleSheet('QPushButton {background-color: #20E620; color: #202020;}')
+            if self.PLAYING:
+                self.ui.btn_start.setStyleSheet('QPushButton {background-color: #20E620; color: #202020;}')
+            else:
+                self.ui.btn_start.setStyleSheet('QPushButton {background-color: #F6F620; color: #202020;}')
         else:
             self.ui.btn_start.setStyleSheet('QPushButton {background-color: #E62020; color: #E6E6E6;}')
         self.WORKING = not self.WORKING
+
+    def set_playing(self, play):
+        self.PLAYING = play
+        if self.WORKING:
+            if self.PLAYING:
+                self.ui.btn_start.setStyleSheet('QPushButton {background-color: #20E620; color: #202020;}')
+            else:
+                self.ui.btn_start.setStyleSheet('QPushButton {background-color: #F6F620; color: #202020;}')
 
     def new_config(self, config_name):
         save_config(f"./configs/{config_name}.ini", default_setting)

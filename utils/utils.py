@@ -73,3 +73,11 @@ def list_ini(root):
         if file.split('.')[-1] == 'ini':
             valueList.append('.'.join(file.split('.')[:-1]))
     return valueList
+
+def display_image(label, base64):
+    ba = QtCore.QByteArray.fromBase64(base64)
+    qimg = QImage.fromData(ba, 'PNG')
+    qimg = QPixmap.fromImage(qimg)
+    label.setPixmap(qimg)
+
+# def display_alpha_image(label, base64):

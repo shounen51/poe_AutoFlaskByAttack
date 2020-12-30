@@ -4,14 +4,15 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import PyQt5.sip
 
-class drawable_label(QLabel):
-    def __init__(self, parent, event):
+class flask_label(QLabel):
+    def __init__(self, parent, event, index):
         QLabel.__init__(self, parent)
         self.event = event
+        self.index = index
         self.setStyleSheet('QLabel {background-color: #000000; color: #000000;}')
     def mousePressEvent(self, e):
-        point = (e.pos().x(), e.pos().y())
-        self.event.E_label_press(point)
+        if e.buttons() == Qt.LeftButton:
+            self.event.drink_Bottled_Faith(self.index)
 
 class clickable_label(QLabel):
     def __init__(self, parent, event):

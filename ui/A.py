@@ -3,8 +3,11 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 from ui.my_widgets import *
 from configs import default_setting
+from src.src import logo_png
+from utils.utils import display_image
 
 class A_form():
     def __init__(self, Form, event):
@@ -27,7 +30,8 @@ class A_form():
 
         self.label_logo = clickable_label(Form, event)
         self.label_logo.setGeometry(QtCore.QRect(440, 10, 60, 60))
-        self.label_logo.setStyleSheet('QLabel {background-image : url("./src/51.png")}')
+        display_image(self.label_logo, logo_png)
+        # self.label_logo.setStyleSheet('QLabel {background-image : url("./src/51.png")}')
         self.label_logo.setObjectName("label_logo")
 
         self.btn_start = my_btn(Form)
@@ -61,7 +65,7 @@ class A_form():
         self.combo_config.setObjectName("combo_config")
         self.combo_config.setEditable(True)
         self.combo_config.lineEdit().setFont(self.font12)
-        self.combo_config.lineEdit().setReadOnly(True)
+        self.combo_config.lineEdit().setReadOnly(False)
         self.combo_config.lineEdit().setAlignment(Qt.AlignCenter)
 
         self.btn_save_config = my_btn(Form)
@@ -141,6 +145,7 @@ class A_form():
         self.btn_new_config.clicked.connect(event.btn_new_config)
         self.edit_new_config.returnPressed.connect(lambda:self.btn_new_config.click())
         self.combo_config.currentIndexChanged.connect(event.combo_config)
+        self.combo_config.editTextChanged.connect(event.combo_config_edit)
         self.btn_save_config.clicked.connect(event.btn_save_config)
         self.edit_flask_time[0].editingFinished.connect(lambda:event.time_edited(self.edit_flask_time[0]))
         self.edit_flask_time[1].editingFinished.connect(lambda:event.time_edited(self.edit_flask_time[1]))
@@ -163,7 +168,7 @@ class A_form():
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("MainWindow", "POE自動喝水 V1.1"))
+        Form.setWindowTitle(_translate("MainWindow", "POE自動喝水 V1.2"))
         self.btn_start.setText(_translate("MainWindow", "啟動"))
         self.btn_new_config.setText(_translate("MainWindow", "新增設定"))
         self.btn_save_config.setText(_translate("MainWindow", "儲存設定"))
@@ -187,6 +192,7 @@ class A_form():
     def enable_edit(self, enable, fonction='all'):
         if fonction.startswith('a') and enable == False:
             self.btn_start.setEnabled(enable)
+            # self.btn_new_config.setEnabled(enable)
             self.combo_config.setEnabled(enable)
             self.gb_global.setEnabled(enable)
             self.gb_flask.setEnabled(enable)
@@ -194,11 +200,12 @@ class A_form():
             self.gb_trigger.setEnabled(enable)
         else:
             self.btn_start.setEnabled(enable)
-            self.combo_config.setEnabled(not self.main.is_working())
-            self.gb_global.setEnabled(not self.main.is_working())
-            self.gb_flask.setEnabled(not self.main.is_working())
-            self.gb_buff.setEnabled(not self.main.is_working())
-            self.gb_trigger.setEnabled(not self.main.is_working())
+            # self.btn_new_config.setEnabled(self.main.is_editOK())
+            self.combo_config.setEnabled(self.main.is_editOK())
+            self.gb_global.setEnabled(self.main.is_editOK())
+            self.gb_flask.setEnabled(self.main.is_editOK())
+            self.gb_buff.setEnabled(self.main.is_editOK())
+            self.gb_trigger.setEnabled(self.main.is_editOK())
 
     def new_config(self, config_name):
         self.edit_new_config.setText('')

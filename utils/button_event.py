@@ -17,6 +17,7 @@ from configs import default_setting
 
 class btn_events():
     def __init__(self, main_window):
+        self.Bottled_Faith = [3,3,3,3,3]
         self.main = main_window
         self.browser = webbrowser.get('windows-default')
 
@@ -86,7 +87,12 @@ class btn_events():
 
     def combo_config(self):
         config_name = self.main.ui.combo_config.currentText()
+        if config_name == '':
+            return
         self.main.change_config(config_name)
+
+    def combo_config_edit(self):
+        print('combo_config_edit')
 
     def btn_save_config(self):
         global_key = self.main.ui.edit_global_enable_key.text()
@@ -109,6 +115,10 @@ class btn_events():
 
     def logo_click(self):
         self.browser.open_new_tab('https://github.com/shounen51/poe_AutoFlaskByAttack')
+
+    """ 喝水 """
+    def drink_Bottled_Faith(self, index):
+        pass
 
 def take_text(edit_list):
     _list = []
