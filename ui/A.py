@@ -6,17 +6,17 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from ui.my_widgets import *
 from configs import default_setting
-from src.src import logo_png
+from src.src import logo_png, flask_png
 from utils.utils import display_image
 
 class A_form():
     def __init__(self, Form, event):
         self.main = Form
         Form.setObjectName("MainWindow")
-        Form.resize(511, 700)
+        Form.resize(511, 760)
         Form.setStyleSheet('QMainWindow {background-color: #242424; color: #E6E6E6;}')
-        Form.setMinimumSize(QtCore.QSize(511, 700))
-        Form.setMaximumSize(QtCore.QSize(511, 700))
+        Form.setMinimumSize(QtCore.QSize(511, 760))
+        Form.setMaximumSize(QtCore.QSize(511, 760))
         self.font36 = QtGui.QFont('微軟正黑體', 36)
         self.font16 = QtGui.QFont('微軟正黑體', 16)
         self.font12 = QtGui.QFont('微軟正黑體', 12)
@@ -25,18 +25,18 @@ class A_form():
         """ main """
         self.label_main = QtWidgets.QLabel(Form)
         self.label_main.setGeometry(QtCore.QRect(30, 30, 215, 94))
-        self.label_main.setStyleSheet('QLabel {background-image : url("./src/flask.png")}')
+        display_image(self.label_main, flask_png)
+        # self.label_main.setStyleSheet('QLabel {background-image : url("./src/flask.png")}')
         self.label_main.setObjectName("label_main")
 
         self.label_logo = clickable_label(Form, event)
         self.label_logo.setGeometry(QtCore.QRect(440, 10, 60, 60))
         display_image(self.label_logo, logo_png)
-        # self.label_logo.setStyleSheet('QLabel {background-image : url("./src/51.png")}')
         self.label_logo.setObjectName("label_logo")
 
         self.btn_start = my_btn(Form)
         self.btn_start.setFont(self.font12)
-        self.btn_start.setGeometry(QtCore.QRect(400, 90, 91, 31))
+        self.btn_start.setGeometry(QtCore.QRect(390, 90, 91, 31))
         self.btn_start.setObjectName("btn_start")
 
         self.gb_global = my_gb(Form)
@@ -51,32 +51,47 @@ class A_form():
 
         self.edit_new_config = my_line_edit(Form)
         self.edit_new_config.setFont(self.font12)
-        self.edit_new_config.setGeometry(QtCore.QRect(30, 140, 101, 31))
+        self.edit_new_config.setGeometry(QtCore.QRect(30, 140, 251, 31))
         self.edit_new_config.setAlignment(Qt.AlignCenter)
 
         self.btn_new_config = my_btn(Form)
         self.btn_new_config.setFont(self.font12)
-        self.btn_new_config.setGeometry(QtCore.QRect(150, 140, 91, 31))
+        self.btn_new_config.setGeometry(QtCore.QRect(290, 140, 91, 31))
         self.btn_new_config.setObjectName("btn_new_config")
+
+        self.btn_rename_config = my_btn(Form)
+        self.btn_rename_config.setFont(self.font12)
+        self.btn_rename_config.setGeometry(QtCore.QRect(390, 140, 91, 31))
+        self.btn_rename_config.setObjectName("btn_rename_config")
 
         self.combo_config = my_ComboBox(Form)
         self.combo_config.setFont(self.font12)
-        self.combo_config.setGeometry(QtCore.QRect(260, 140, 121, 31))
+        self.combo_config.setGeometry(QtCore.QRect(30, 180, 351, 31))
         self.combo_config.setObjectName("combo_config")
         self.combo_config.setEditable(True)
         self.combo_config.lineEdit().setFont(self.font12)
-        self.combo_config.lineEdit().setReadOnly(False)
+        self.combo_config.lineEdit().setReadOnly(True)
         self.combo_config.lineEdit().setAlignment(Qt.AlignCenter)
+
+        # self.combo_line_edit = my_line_edit(Form)
+        # self.combo_line_edit.setFont(self.font12)
+        # self.combo_line_edit.setAlignment(Qt.AlignCenter)
+        # self.combo_config.setLineEdit(self.combo_line_edit)
 
         self.btn_save_config = my_btn(Form)
         self.btn_save_config.setFont(self.font12)
-        self.btn_save_config.setGeometry(QtCore.QRect(400, 140, 91, 31))
+        self.btn_save_config.setGeometry(QtCore.QRect(390, 180, 91, 31))
         self.btn_save_config.setObjectName("btn_save_config")
+
+        self.btn_del_config = my_btn(Form)
+        self.btn_del_config.setFont(self.font12)
+        self.btn_del_config.setGeometry(QtCore.QRect(390, 720, 91, 31))
+        self.btn_del_config.setObjectName("btn_del_config")
 
         """ flask """
         self.gb_flask = my_gb(Form)
         self.gb_flask.setFont(self.font12)
-        self.gb_flask.setGeometry(QtCore.QRect(40, 190, 431, 161))
+        self.gb_flask.setGeometry(QtCore.QRect(40, 230, 431, 161))
 
         self.edit_flask_key = []
         for i in range(5):
@@ -99,7 +114,7 @@ class A_form():
         """ buff """
         self.gb_buff = my_gb(Form)
         self.gb_buff.setFont(self.font12)
-        self.gb_buff.setGeometry(QtCore.QRect(40, 370, 431, 161))
+        self.gb_buff.setGeometry(QtCore.QRect(40, 410, 431, 161))
 
         self.edit_buff_key = []
         for i in range(5):
@@ -122,7 +137,7 @@ class A_form():
         """ trigger """
         self.gb_trigger = my_gb(Form)
         self.gb_trigger.setFont(self.font12)
-        self.gb_trigger.setGeometry(QtCore.QRect(40, 550, 431, 121))
+        self.gb_trigger.setGeometry(QtCore.QRect(40, 590, 431, 121))
 
         self.edit_trigger_key = []
         for i in range(3):
@@ -145,8 +160,10 @@ class A_form():
         self.btn_new_config.clicked.connect(event.btn_new_config)
         self.edit_new_config.returnPressed.connect(lambda:self.btn_new_config.click())
         self.combo_config.currentIndexChanged.connect(event.combo_config)
-        self.combo_config.editTextChanged.connect(event.combo_config_edit)
+        self.btn_rename_config.clicked.connect(event.btn_rename_config)
         self.btn_save_config.clicked.connect(event.btn_save_config)
+        self.btn_del_config.clicked.connect(event.btn_del_config)
+        
         self.edit_flask_time[0].editingFinished.connect(lambda:event.time_edited(self.edit_flask_time[0]))
         self.edit_flask_time[1].editingFinished.connect(lambda:event.time_edited(self.edit_flask_time[1]))
         self.edit_flask_time[2].editingFinished.connect(lambda:event.time_edited(self.edit_flask_time[2]))
@@ -168,21 +185,23 @@ class A_form():
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("MainWindow", "POE自動喝水 V1.2"))
+        Form.setWindowTitle(_translate("MainWindow", "POE自動喝水 V1.3"))
         self.btn_start.setText(_translate("MainWindow", "啟動"))
         self.btn_new_config.setText(_translate("MainWindow", "新增設定"))
+        self.btn_rename_config.setText(_translate("MainWindow", "修改名稱"))
         self.btn_save_config.setText(_translate("MainWindow", "儲存設定"))
+        self.btn_del_config.setText(_translate("MainWindow", "刪除設定"))
         self.gb_global.setTitle(_translate("MainWindow", "啟動快捷鍵"))
-        self.edit_global_enable_key.setPlaceholderText(_translate("MainWindow", "f2"))
+        # self.edit_global_enable_key.setPlaceholderText(_translate("MainWindow", "f2"))
         self.edit_new_config.setPlaceholderText(_translate("MainWindow", "設定檔名稱"))
 
         self.gb_flask.setTitle(_translate("MainWindow", "藥水按鍵與持續時間"))
-        self.edit_flask_key[0].setPlaceholderText(_translate("MainWindow", "1"))
-        self.edit_flask_time[0].setPlaceholderText(_translate("MainWindow", "4.8"))
+        # self.edit_flask_key[0].setPlaceholderText(_translate("MainWindow", "1"))
+        # self.edit_flask_time[0].setPlaceholderText(_translate("MainWindow", "4.8"))
 
         self.gb_buff.setTitle(_translate("MainWindow", "增益按鍵與持續時間"))
-        self.edit_buff_key[0].setPlaceholderText(_translate("MainWindow", "q"))
-        self.edit_buff_time[0].setPlaceholderText(_translate("MainWindow", "8.7"))
+        # self.edit_buff_key[0].setPlaceholderText(_translate("MainWindow", "q"))
+        # self.edit_buff_time[0].setPlaceholderText(_translate("MainWindow", "8.7"))
 
         self.gb_trigger.setTitle(_translate("MainWindow", "觸發按鍵(無設定則自動使用)"))
 
@@ -198,9 +217,15 @@ class A_form():
             self.gb_flask.setEnabled(enable)
             self.gb_buff.setEnabled(enable)
             self.gb_trigger.setEnabled(enable)
+            self.btn_rename_config.setEnabled(enable)
+            self.btn_del_config.setEnabled(enable)
+            self.btn_save_config.setEnabled(enable)
         else:
             self.btn_start.setEnabled(enable)
             # self.btn_new_config.setEnabled(self.main.is_editOK())
+            self.btn_rename_config.setEnabled(self.main.is_editOK())
+            self.btn_del_config.setEnabled(self.main.is_editOK())
+            self.btn_save_config.setEnabled(self.main.is_editOK())
             self.combo_config.setEnabled(self.main.is_editOK())
             self.gb_global.setEnabled(self.main.is_editOK())
             self.gb_flask.setEnabled(self.main.is_editOK())

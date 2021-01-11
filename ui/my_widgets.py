@@ -45,6 +45,7 @@ class focus_line_edit(QLineEdit):
 class my_ComboBox(QComboBox):
     def __init__(self, parent):
         QComboBox.__init__(self, parent)
+        self.parent = parent
         self.setStyleSheet('QComboBox {background-color: #424242; color: #E6E6E6;}')
 
 class my_btn(QPushButton):
@@ -68,7 +69,6 @@ class my_line_edit(QLineEdit):
         self.setStyleSheet('QLineEdit {background-color: #000000; color: #E6E6E6;}')
         self.setFocusPolicy(Qt.ClickFocus)
         self.setContextMenuPolicy(Qt.NoContextMenu)
-
 
 class my_label(QLabel):
     def __init__(self, parent):

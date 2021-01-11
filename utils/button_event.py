@@ -82,7 +82,12 @@ class btn_events():
     def btn_new_config(self):
         file_name = self.main.ui.edit_new_config.text()
         if file_name == '' or file_name in self.main.config_list:
+            self.main.ui.edit_new_config.setText('')
             return
+        for c in file_name:
+            if c in ['/','\\',':','*','?','"','<','>','|']:
+                self.main.ui.edit_new_config.setText('')
+                return
         self.main.new_config(file_name)
 
     def combo_config(self):
@@ -91,8 +96,25 @@ class btn_events():
             return
         self.main.change_config(config_name)
 
-    def combo_config_edit(self):
-        print('combo_config_edit')
+    def btn_rename_config(self):
+        cb = self.main.ui.combo_config
+        config_name = self.main.ui.edit_new_config.text()
+        for c in config_name:
+            if c in ['/','\\',':','*','?','"','<','>','|']:
+                self.main.ui.edit_new_config.setText('')
+                return
+        if config_name == self.main.now_config() or config_name == '':
+            self.main.ui.edit_new_config.setText('')
+            return
+        try:
+            self.main.ui.edit_new_config.setText('')
+            old_name = os.path.join('./configs', self.main.now_config() + '.ini')
+            new_name = os.path.join('./configs', config_name + '.ini')
+            os.rename(old_name, new_name)
+            self.main.setting_config_name(config_name)
+            cb.setItemText(cb.currentIndex(), config_name)
+        except:
+            pass
 
     def btn_save_config(self):
         global_key = self.main.ui.edit_global_enable_key.text()
@@ -108,6 +130,18 @@ class btn_events():
         self.main.modfy_setting('buff', 'time', buff_time)
         self.main.modfy_setting('trigger', 'key', trigger)
         save_config(f"./configs/{self.main.config_name}.ini", self.main.setting)
+
+    def btn_del_config(self):
+        cb = self.main.ui.combo_config
+        if cb.count() <= 1:
+            return
+        config_name = self.main.now_config()
+        del_name = os.path.join('./configs', config_name + '.ini')
+        try:
+            cb.removeItem(cb.currentIndex())
+            os.remove(del_name)
+        except:
+            pass
 
     def time_edited(self, edit):
         if float(edit.text()) < 0.1:

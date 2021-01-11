@@ -10,8 +10,8 @@ class poe_detector(QThread):
         super().__init__()
         self.main = main
         self.win = 0
-        self.game = '小算盤'
-        # self.game = 'Path of Exile'
+        # self.game = '小算盤'
+        self.game = 'Path of Exile'
 
     def start(self):
         self.t = threading.Thread(target=self.run,)

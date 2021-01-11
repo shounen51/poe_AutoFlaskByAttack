@@ -80,4 +80,11 @@ def display_image(label, base64):
     qimg = QPixmap.fromImage(qimg)
     label.setPixmap(qimg)
 
+def base2Qpixmap(base64):
+    ba = QtCore.QByteArray.fromBase64(base64)
+    qimg = QImage.fromData(ba, 'PNG')
+    qimg = QPixmap.fromImage(qimg)
+    return qimg
+
+
 # def display_alpha_image(label, base64):

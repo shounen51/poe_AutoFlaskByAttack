@@ -9,7 +9,8 @@
 ⠄⠄⠄⢀⣶⡟⣽⠼⢀⡕⢀⠘⠸⢮⡳⡻⡍⡷⡆⠤⠤⠭⢸⢳⣷⢸⡟⣷⠄⠄⠄⠄
 '''
 """[summary]
-    V1.1
+    V1.3
+    更名與刪除設定檔
 """
 
 import ctypes
@@ -29,14 +30,15 @@ from ui.A import A_form
 from utils.button_event import btn_events
 from utils.input_listener import input_listener
 from utils.poe_detector import poe_detector
-from utils.utils import load_config, save_config, load_ini, save_ini, list_ini
+from utils.utils import load_config, save_config, load_ini, save_ini, list_ini, base2Qpixmap
 from configs import default_setting
+from src.src import icon_png
 
 class MainWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         myicon = QIcon()
-        myicon.addPixmap(QPixmap("src/icon.ico"), QIcon.Normal, QIcon.Off)
+        myicon.addPixmap(base2Qpixmap(icon_png), QIcon.Normal, QIcon.Off)
         self.setWindowIcon(myicon)
         self.PLAYING = False
         self.detector = poe_detector(self)
@@ -49,6 +51,7 @@ class MainWindow(QMainWindow):
         self.is_editOK = lambda: not self.WORKING
         self.config_list = list_ini('./configs')
         self.config_name = load_ini(self.config_list)
+        self.now_config = lambda: self.config_name
         OK, self.setting = load_config(f"./configs/{self.config_name}.ini")
         self.event = btn_events(self)
         self.ui = A_form(self, self.event)
@@ -57,6 +60,10 @@ class MainWindow(QMainWindow):
 
     def setting_key(self, setting):
         self.SETTING=setting
+
+    def setting_config_name(self, name):
+        self.config_name = name
+        save_ini(name)
 
     def start_stop(self, setting={}):
         if not self.WORKING:
@@ -124,7 +131,6 @@ class MainWindow(QMainWindow):
 
     def closeEvent(self, event):
         pass
-        # save_config('./setting.ini', self.setting)
 
 if __name__ == "__main__":
     if not os.path.isdir('./log'):
