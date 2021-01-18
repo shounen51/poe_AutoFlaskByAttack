@@ -88,6 +88,11 @@ class A_form():
         self.btn_del_config.setGeometry(QtCore.QRect(390, 720, 91, 31))
         self.btn_del_config.setObjectName("btn_del_config")
 
+        self.btn_floating_win = my_btn(Form)
+        self.btn_floating_win.setFont(self.font12)
+        self.btn_floating_win.setGeometry(QtCore.QRect(30, 720, 91, 31))
+        self.btn_floating_win.setObjectName("btn_floating_win")
+
         """ flask """
         self.gb_flask = my_gb(Form)
         self.gb_flask.setFont(self.font12)
@@ -163,6 +168,7 @@ class A_form():
         self.btn_rename_config.clicked.connect(event.btn_rename_config)
         self.btn_save_config.clicked.connect(event.btn_save_config)
         self.btn_del_config.clicked.connect(event.btn_del_config)
+        self.btn_floating_win.clicked.connect(event.btn_floating_win)
         
         self.edit_flask_time[0].editingFinished.connect(lambda:event.time_edited(self.edit_flask_time[0]))
         self.edit_flask_time[1].editingFinished.connect(lambda:event.time_edited(self.edit_flask_time[1]))
@@ -185,12 +191,13 @@ class A_form():
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("MainWindow", "POE自動喝水 V1.3"))
+        Form.setWindowTitle(_translate("MainWindow", "POE自動喝水 V1.4"))
         self.btn_start.setText(_translate("MainWindow", "啟動"))
         self.btn_new_config.setText(_translate("MainWindow", "新增設定"))
         self.btn_rename_config.setText(_translate("MainWindow", "修改名稱"))
         self.btn_save_config.setText(_translate("MainWindow", "儲存設定"))
         self.btn_del_config.setText(_translate("MainWindow", "刪除設定"))
+        self.btn_floating_win.setText(_translate("MainWindow", "懸浮視窗"))
         self.gb_global.setTitle(_translate("MainWindow", "啟動快捷鍵"))
         # self.edit_global_enable_key.setPlaceholderText(_translate("MainWindow", "f2"))
         self.edit_new_config.setPlaceholderText(_translate("MainWindow", "設定檔名稱"))

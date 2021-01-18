@@ -9,8 +9,11 @@
 ⠄⠄⠄⢀⣶⡟⣽⠼⢀⡕⢀⠘⠸⢮⡳⡻⡍⡷⡆⠤⠤⠭⢸⢳⣷⢸⡟⣷⠄⠄⠄⠄
 '''
 """[summary]
-    V1.3
-    更名與刪除設定檔
+    V1.4
+        新增懸浮視窗
+        必須1920*1080才可使用懸浮視窗
+    已知bug:
+        用久了啟動鍵顏色的黃綠切換異常，但主要功能正常
 """
 
 import ctypes
@@ -27,6 +30,7 @@ from PyQt5.QtWidgets import *
 import PyQt5.sip
 
 from ui.A import A_form
+from ui.floating_win import B_form
 from utils.button_event import btn_events
 from utils.input_listener import input_listener
 from utils.poe_detector import poe_detector
@@ -39,6 +43,7 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self)
         myicon = QIcon()
         myicon.addPixmap(base2Qpixmap(icon_png), QIcon.Normal, QIcon.Off)
+        self.FLOATING = False
         self.setWindowIcon(myicon)
         self.PLAYING = False
         self.detector = poe_detector(self)
@@ -55,6 +60,7 @@ class MainWindow(QMainWindow):
         OK, self.setting = load_config(f"./configs/{self.config_name}.ini")
         self.event = btn_events(self)
         self.ui = A_form(self, self.event)
+        self.floating_window = B_form(self)
         self.linstener = input_listener(self)
         self.linstener.start()
 
@@ -65,14 +71,23 @@ class MainWindow(QMainWindow):
         self.config_name = name
         save_ini(name)
 
+    def switch_floating(self):
+        self.FLOATING = not self.FLOATING
+        if self.FLOATING:
+            self.floating_window.show()
+        else:
+            self.floating_window.close()
+
     def start_stop(self, setting={}):
         if not self.WORKING:
             self.linstener.load_and_start(setting)
+            self.floating_window.set_working(True)
             if self.PLAYING:
                 self.ui.btn_start.setStyleSheet('QPushButton {background-color: #20E620; color: #202020;}')
             else:
                 self.ui.btn_start.setStyleSheet('QPushButton {background-color: #F6F620; color: #202020;}')
         else:
+            self.floating_window.set_working(False)
             self.ui.btn_start.setStyleSheet('QPushButton {background-color: #E62020; color: #E6E6E6;}')
         self.WORKING = not self.WORKING
 

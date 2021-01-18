@@ -143,6 +143,9 @@ class btn_events():
         except:
             pass
 
+    def btn_floating_win(self):
+        self.main.switch_floating()
+
     def time_edited(self, edit):
         if float(edit.text()) < 0.1:
             edit.setText('0.1')
