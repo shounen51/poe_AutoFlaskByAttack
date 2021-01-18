@@ -42,7 +42,7 @@ class B_form(canvas_win):
         self.setWindowTitle("懸浮視窗")
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.BypassWindowManagerHint | QtCore.Qt.Tool | QtCore.Qt.WindowStaysOnTopHint)
         self.resize(100,100)
-        self.move(565,948)
+        self.move(630,948)
         self.label_icon = canvas_label(self, self.main.event.btn_start)
         self.label_icon.setGeometry(QtCore.QRect(0, 0, 100, 100))
         display_image(self.label_icon, floating_win_off)
