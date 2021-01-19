@@ -47,6 +47,13 @@ class B_form(canvas_win):
         self.label_icon.setGeometry(QtCore.QRect(0, 0, 100, 100))
         display_image(self.label_icon, floating_win_off)
 
+    def set_rect(self, x, y, w, h):
+        # self.resize(w, h)
+        self.move(x, y)
+
+    def showEvent(self, event):
+        self.main.detector.catch_self_hWnds()
+
     def closeEvent(self, event):
         # self.__deleteItemsOfLayout()
         pass

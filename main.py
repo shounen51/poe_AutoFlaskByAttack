@@ -9,11 +9,10 @@
 ⠄⠄⠄⢀⣶⡟⣽⠼⢀⡕⢀⠘⠸⢮⡳⡻⡍⡷⡆⠤⠤⠭⢸⢳⣷⢸⡟⣷⠄⠄⠄⠄
 '''
 """[summary]
-    V1.4
-        新增懸浮視窗
-        必須1920*1080才可使用懸浮視窗
-    已知bug:
-        用久了啟動鍵顏色的黃綠切換異常，但主要功能正常
+    V1.4.1
+        使懸浮視窗自動符合POE視窗
+        懸浮視窗只在focus poe和本程式時顯示
+        版本號改放在左上角而非標題
 """
 
 import ctypes
@@ -43,12 +42,11 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self)
         myicon = QIcon()
         myicon.addPixmap(base2Qpixmap(icon_png), QIcon.Normal, QIcon.Off)
-        self.FLOATING = False
         self.setWindowIcon(myicon)
         self.PLAYING = False
+        self.FLOATING = False
         self.detector = poe_detector(self)
         self.detector.playing_signal.connect(self.set_playing)
-        self.detector.start()
         self.SETTING = False
         self.is_setting = lambda: self.SETTING
         self.WORKING = False
@@ -63,6 +61,11 @@ class MainWindow(QMainWindow):
         self.floating_window = B_form(self)
         self.linstener = input_listener(self)
         self.linstener.start()
+        self.detector.start()
+
+    def showEvent(self, event):
+        print('main show')
+        self.detector.catch_self_hWnds()
 
     def setting_key(self, setting):
         self.SETTING=setting
@@ -74,8 +77,11 @@ class MainWindow(QMainWindow):
     def switch_floating(self):
         self.FLOATING = not self.FLOATING
         if self.FLOATING:
-            self.floating_window.show()
+            self.ui.btn_floating_win.setText('關閉懸浮')
+            if self.detector.check_focus_self_or_poe():
+                self.floating_window.show()
         else:
+            self.ui.btn_floating_win.setText('開啟懸浮')
             self.floating_window.close()
 
     def start_stop(self, setting={}):
@@ -98,6 +104,11 @@ class MainWindow(QMainWindow):
                 self.ui.btn_start.setStyleSheet('QPushButton {background-color: #20E620; color: #202020;}')
             else:
                 self.ui.btn_start.setStyleSheet('QPushButton {background-color: #F6F620; color: #202020;}')
+        if self.FLOATING and self.detector.check_focus_self_or_poe():
+            self.floating_window.show()
+        else:
+            self.floating_window.close()
+
 
     def new_config(self, config_name):
         save_config(f"./configs/{config_name}.ini", default_setting)
@@ -148,8 +159,8 @@ class MainWindow(QMainWindow):
         pass
 
 if __name__ == "__main__":
-    if not os.path.isdir('./log'):
-        os.mkdir('./log')
+    os.makedirs('./log', exist_ok=True)
+    os.makedirs('./configs', exist_ok=True)
     logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s [%(levelname)s] %(message)s',
                     datefmt='%Y-%m-%d %H:%M',

@@ -29,6 +29,11 @@ class A_form():
         # self.label_main.setStyleSheet('QLabel {background-image : url("./src/flask.png")}')
         self.label_main.setObjectName("label_main")
 
+        self.label_ver = my_label(Form)
+        self.label_ver.setGeometry(QtCore.QRect(10, 5, 150, 20))
+        self.label_ver.setFont(self.font9)
+        self.label_ver.setObjectName("label_ver")
+
         self.label_logo = clickable_label(Form, event)
         self.label_logo.setGeometry(QtCore.QRect(440, 10, 60, 60))
         display_image(self.label_logo, logo_png)
@@ -191,13 +196,14 @@ class A_form():
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("MainWindow", "POE自動喝水 V1.4"))
+        Form.setWindowTitle(_translate("MainWindow", "POE自動喝水"))
+        self.label_ver.setText(_translate("MainWindow", "v1.4.1"))
         self.btn_start.setText(_translate("MainWindow", "啟動"))
         self.btn_new_config.setText(_translate("MainWindow", "新增設定"))
         self.btn_rename_config.setText(_translate("MainWindow", "修改名稱"))
         self.btn_save_config.setText(_translate("MainWindow", "儲存設定"))
         self.btn_del_config.setText(_translate("MainWindow", "刪除設定"))
-        self.btn_floating_win.setText(_translate("MainWindow", "懸浮視窗"))
+        self.btn_floating_win.setText(_translate("MainWindow", "開啟懸浮"))
         self.gb_global.setTitle(_translate("MainWindow", "啟動快捷鍵"))
         # self.edit_global_enable_key.setPlaceholderText(_translate("MainWindow", "f2"))
         self.edit_new_config.setPlaceholderText(_translate("MainWindow", "設定檔名稱"))

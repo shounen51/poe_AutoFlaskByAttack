@@ -21,7 +21,7 @@ class btn_events():
         self.main = main_window
         self.browser = webbrowser.get('windows-default')
 
-    """ 設置按鈕 """
+    """ 設定按鍵事件 """
     def focus_out(self, edit):
         edit.setStyleSheet('QLineEdit {background-color: #000000; color: #E6E6E6;}')
         self.main.setting_key(False)
@@ -33,10 +33,10 @@ class btn_events():
             key = self.main.linstener.get_last()
             if key == 'delete':
                 edit.setText('')
-                if edit.type.startswith('f'):
+                if edit.type.startswith('f'): # flask
                     self.main.ui.edit_flask_time[edit.index].setText('')
                     self.main.ui.edit_flask_time[edit.index].setEnabled(False)
-                elif edit.type.startswith('b'):
+                elif edit.type.startswith('b'): # buff
                     self.main.ui.edit_buff_time[edit.index].setText('')
                     self.main.ui.edit_buff_time[edit.index].setEnabled(False)
             elif key != 'esc':
@@ -144,6 +144,16 @@ class btn_events():
             pass
 
     def btn_floating_win(self):
+        poe_running, rect = self.main.detector.get_poe_rect()
+        if poe_running:
+            x1, y1, x2, y2 = rect
+            w = x2-x1
+            h = y2-y1
+            fx = int(w*0.328125+x1)
+            fy = int(h*0.877777+y1)
+            fw = int(100*(w/1920))
+            fh = int(100*(h/1080))
+            self.main.floating_window.set_rect(fx, fy, fw, fh)
         self.main.switch_floating()
 
     def time_edited(self, edit):
