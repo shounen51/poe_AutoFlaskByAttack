@@ -11,6 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+import win32api
 
 from utils.utils import display_image
 from src.floating_win_on import floating_win_on
@@ -26,7 +27,7 @@ class canvas_win(QWidget):
 class canvas_label(QLabel):
     def __init__(self, parent, event, is_movingFloating):
         QLabel.__init__(self, parent)
-        self.move2 = parent.move2
+        self.parent = parent
         # self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.BypassWindowManagerHint | QtCore.Qt.Tool | QtCore.Qt.WindowStaysOnTopHint)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         # self.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents, True)
@@ -40,12 +41,13 @@ class canvas_label(QLabel):
         if e.buttons() == Qt.LeftButton and not self.is_movingFloating():
             self.event()
         else:
-            self.x = e.pos().x()
-            self.y = e.pos().y()
+            self.x, self.y = win32api.GetCursorPos()
+            self.parent.anchor()
 
     def mouseMoveEvent(self, e):
         if self.is_movingFloating():
-            self.move2(e.pos().x() - self.x, e.pos().y() - self.y)
+            x, y = win32api.GetCursorPos()
+            self.parent.move2(x - self.x, y - self.y)
 
 class B_form(canvas_win):
     def __init__(self, main):
@@ -58,9 +60,15 @@ class B_form(canvas_win):
         self.label_icon = canvas_label(self, self.main.event.btn_start, self.main.is_movingFloating)
         self.label_icon.setGeometry(QtCore.QRect(0, 0, 100, 100))
         display_image(self.label_icon, floating_win_off)
+        self.old_x = 0
+        self.old_y = 0
+
+    def anchor(self):
+        self.old_x = self.x()
+        self.old_y = self.y()        
 
     def move2(self, x, y):
-        self.move(self.x() + x, self.y() + y)
+        self.move(self.old_x + x, self.old_y + y)
 
     def set_rect(self, x, y, w, h):
         # self.resize(w, h)
