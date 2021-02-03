@@ -36,7 +36,7 @@ class focus_line_edit(QLineEdit):
     def focusOutEvent(self, e):
         self.event.focus_out(self)
     def keyPressEvent(self,e):
-        if e.key() in [16777234, 16777235, 16777236, 16777237, 16777249]:
+        if e.key() in [16777234, 16777235, 16777236, 16777237, 16777251]:
             return
         self.event.input_in(self)
     def mousePressEvent(self, e):

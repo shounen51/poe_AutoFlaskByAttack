@@ -124,7 +124,7 @@ class input_listener():
         button = self.button_regularization(button)
         if button in ['up', 'down', 'left', 'right']:
             return
-        elif button == 'ctrl_l':
+        elif button == 'alt_l':
             self.start_move_floating(True)
             self.btn_signal.click()
         elif self.is_setting():
@@ -139,7 +139,7 @@ class input_listener():
 
     def keyboard_on_release(self, button):
         button = self.button_regularization(button)
-        if button == 'ctrl_l':
+        if button == 'alt_l':
             self.start_move_floating(False)
             self.btn_signal.click()
         if not self.is_working():
