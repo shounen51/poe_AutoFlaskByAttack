@@ -9,8 +9,10 @@
 ⠄⠄⠄⢀⣶⡟⣽⠼⢀⡕⢀⠘⠸⢮⡳⡻⡍⡷⡆⠤⠤⠭⢸⢳⣷⢸⡟⣷⠄⠄⠄⠄
 '''
 """[summary]
-    V1.4.2
-        懸浮視窗可以用左ctrl+拖動來移動位置
+    v1.4.2
+        懸浮視窗可以用左Alt+拖動來移動位置
+    v1.5
+        可以檢查版本
 """
 
 import ctypes
@@ -31,9 +33,11 @@ from ui.floating_win import B_form
 from utils.button_event import btn_events
 from utils.input_listener import input_listener
 from utils.poe_detector import poe_detector
-from utils.utils import load_config, save_config, load_ini, save_ini, list_ini, base2Qpixmap
+from utils.check_versoin import check_version_thread
+from utils.utils import load_config, save_config, load_ini, save_ini, list_ini, base2Qpixmap, display_image
 from configs import default_setting
 from src.icon_png import icon_png
+from src.logo_update_png import logo_update_png
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -62,6 +66,9 @@ class MainWindow(QMainWindow):
         self.linstener = input_listener(self)
         self.linstener.start()
         self.detector.start()
+        self.check_updata = check_version_thread()
+        self.check_updata.update_signal.connect(self.need2update)
+        self.check_updata.start()
 
     def showEvent(self, event):
         print('main show')
@@ -114,6 +121,8 @@ class MainWindow(QMainWindow):
         else:
             self.floating_window.close()
 
+    def need2update(self):
+        display_image(self.ui.label_logo, logo_update_png)
 
     def new_config(self, config_name):
         save_config(f"./configs/{config_name}.ini", default_setting)

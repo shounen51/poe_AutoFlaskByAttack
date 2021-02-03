@@ -4,6 +4,7 @@ import time
 import random
 import logging
 
+import requests
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -86,5 +87,26 @@ def base2Qpixmap(base64):
     qimg = QPixmap.fromImage(qimg)
     return qimg
 
+def now_version():
+    try:
+        with open('./version.ini','r') as f:
+            v = f.readline()
+    except:
+        v = 'unknow version'
+    return v
 
-# def display_alpha_image(label, base64):
+def HTTP_request(HTTP, _type = 'POST', headers='', data=''):
+    if _type == 'POST' or _type == 'post':
+        r = requests.post(HTTP, data=data, headers=headers)
+    else:
+        r = requests.get(HTTP, headers=headers, data=data)
+    try:
+        _dict = json.loads(r.text)
+    except:
+        _dict = {}
+    if r.status_code == 200:
+        logging.info('[request suecess] ' + HTTP)
+        return 1, _dict
+    else:
+        logging.warning('request fail ' + str(r.status_code) + ' from ' + HTTP)
+        return 0, _dict
