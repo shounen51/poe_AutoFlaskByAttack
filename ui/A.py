@@ -50,7 +50,7 @@ class A_form():
         self.gb_global.setGeometry(QtCore.QRect(260, 30, 121, 94))
 
         self.edit_global_enable_key = focus_line_edit(self.gb_global, event, 'global', 0)
-        self.edit_global_enable_key.setFont(self.font9)
+        self.edit_global_enable_key.setFont(self.font12)
         self.edit_global_enable_key.setGeometry(QtCore.QRect(10, 30, 101, 51))
         self.edit_global_enable_key.setAlignment(Qt.AlignCenter)
         self.edit_global_enable_key.setReadOnly(True)
