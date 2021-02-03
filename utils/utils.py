@@ -103,7 +103,7 @@ def HTTP_request(HTTP, _type = 'POST', headers='', data=''):
     try:
         _dict = json.loads(r.text)
     except:
-        _dict = {}
+        _dict = r.text
     if r.status_code == 200:
         logging.info('[request suecess] ' + HTTP)
         return 1, _dict

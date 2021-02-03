@@ -10,6 +10,7 @@ class check_version_thread(QThread):
     def run(self):
         now_v = now_version()
         ok, newest_v = HTTP_request(self.url, 'get')
+        print(newest_v)
         if ok and now_v != newest_v:
             self.update_signal.emit()
         else:
