@@ -6,7 +6,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from ui.my_widgets import *
 from configs import default_setting
-from src.src import logo_png, flask_png
+from src.logo_png import logo_png
+from src.flask_png import flask_png
 from utils.utils import display_image
 
 class A_form():
@@ -197,7 +198,7 @@ class A_form():
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("MainWindow", "POE自動喝水"))
-        self.label_ver.setText(_translate("MainWindow", "v1.4.1"))
+        self.label_ver.setText(_translate("MainWindow", "v1.4.2"))
         self.btn_start.setText(_translate("MainWindow", "啟動"))
         self.btn_new_config.setText(_translate("MainWindow", "新增設定"))
         self.btn_rename_config.setText(_translate("MainWindow", "修改名稱"))

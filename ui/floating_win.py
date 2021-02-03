@@ -13,7 +13,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from utils.utils import display_image
-from src.src import floating_win_on, floating_win_off
+from src.floating_win_on import floating_win_on
+from src.floating_win_off import floating_win_off
 
 class canvas_win(QWidget):
     def __init__(self):
@@ -23,17 +24,28 @@ class canvas_win(QWidget):
         #self.setStyleSheet('QWidget {background-color: #FFFFFF; color: #000000;}')
 
 class canvas_label(QLabel):
-    def __init__(self, parent, event):
+    def __init__(self, parent, event, is_movingFloating):
         QLabel.__init__(self, parent)
+        self.move2 = parent.move2
         # self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.BypassWindowManagerHint | QtCore.Qt.Tool | QtCore.Qt.WindowStaysOnTopHint)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         # self.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents, True)
         self.setStyleSheet('QLabel {background-color: #FFFFFF; color: #000000;}')
         self.event = event
+        self.is_movingFloating = is_movingFloating
+        self.x = 0
+        self.y = 0
 
     def mousePressEvent(self, e):
-        if e.buttons() == Qt.LeftButton:
+        if e.buttons() == Qt.LeftButton and not self.is_movingFloating():
             self.event()
+        else:
+            self.x = e.pos().x()
+            self.y = e.pos().y()
+
+    def mouseMoveEvent(self, e):
+        if self.is_movingFloating():
+            self.move2(e.pos().x() - self.x, e.pos().y() - self.y)
 
 class B_form(canvas_win):
     def __init__(self, main):
@@ -43,9 +55,12 @@ class B_form(canvas_win):
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.BypassWindowManagerHint | QtCore.Qt.Tool | QtCore.Qt.WindowStaysOnTopHint)
         self.resize(100,100)
         self.move(630,948)
-        self.label_icon = canvas_label(self, self.main.event.btn_start)
+        self.label_icon = canvas_label(self, self.main.event.btn_start, self.main.is_movingFloating)
         self.label_icon.setGeometry(QtCore.QRect(0, 0, 100, 100))
         display_image(self.label_icon, floating_win_off)
+
+    def move2(self, x, y):
+        self.move(self.x() + x, self.y() + y)
 
     def set_rect(self, x, y, w, h):
         # self.resize(w, h)

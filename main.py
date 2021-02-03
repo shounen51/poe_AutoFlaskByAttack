@@ -9,10 +9,8 @@
 ⠄⠄⠄⢀⣶⡟⣽⠼⢀⡕⢀⠘⠸⢮⡳⡻⡍⡷⡆⠤⠤⠭⢸⢳⣷⢸⡟⣷⠄⠄⠄⠄
 '''
 """[summary]
-    V1.4.1
-        使懸浮視窗自動符合POE視窗
-        懸浮視窗只在focus poe和本程式時顯示
-        版本號改放在左上角而非標題
+    V1.4.2
+        懸浮視窗可以用左ctrl+拖動來移動位置
 """
 
 import ctypes
@@ -35,7 +33,7 @@ from utils.input_listener import input_listener
 from utils.poe_detector import poe_detector
 from utils.utils import load_config, save_config, load_ini, save_ini, list_ini, base2Qpixmap
 from configs import default_setting
-from src.src import icon_png
+from src.icon_png import icon_png
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -50,6 +48,8 @@ class MainWindow(QMainWindow):
         self.SETTING = False
         self.is_setting = lambda: self.SETTING
         self.WORKING = False
+        self.MOVEFLOWTING = False
+        self.is_movingFloating = lambda: self.FLOATING and self.MOVEFLOWTING
         self.is_working = lambda: self.WORKING and self.detector.check_immediately()
         self.is_editOK = lambda: not self.WORKING
         self.config_list = list_ini('./configs')
@@ -83,6 +83,11 @@ class MainWindow(QMainWindow):
         else:
             self.ui.btn_floating_win.setText('開啟懸浮')
             self.floating_window.close()
+
+    def start_move_floating(self, press=None):
+        if press!=None:
+            self.MOVEFLOWTING = press
+        return self.MOVEFLOWTING
 
     def start_stop(self, setting={}):
         if not self.WORKING:

@@ -12,14 +12,32 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from utils.utils import save_config
+from utils.utils import save_config, display_image
 from configs import default_setting
+from src.floating_win_on import floating_win_on
+from src.floating_win_off import floating_win_off
+from src.moving_floating_on import moving_floating_on
+from src.moving_floating_off import moving_floating_off
 
 class btn_events():
     def __init__(self, main_window):
         self.Bottled_Faith = [3,3,3,3,3]
         self.main = main_window
         self.browser = webbrowser.get('windows-default')
+
+    """ 懸浮視窗事件 """
+    def change_floating_border(self):
+        press = self.main.start_move_floating()
+        if press:
+            if self.main.WORKING:
+                display_image(self.main.floating_window.label_icon, moving_floating_on)
+            else:
+                display_image(self.main.floating_window.label_icon, moving_floating_off)
+        else:
+            if self.main.WORKING:
+                display_image(self.main.floating_window.label_icon, floating_win_on)
+            else:
+                display_image(self.main.floating_window.label_icon, floating_win_off)
 
     """ 設定按鍵事件 """
     def focus_out(self, edit):

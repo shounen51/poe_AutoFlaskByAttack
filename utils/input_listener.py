@@ -3,6 +3,12 @@ import time
 
 from pynput import mouse
 from pynput import keyboard
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
+
+class trigger_move_button(QPushButton):
+    def __init__(self, parent):
+        QPushButton.__init__(self, parent)
 
 class flaskbuff():
     def __init__(self, key, cdt):
@@ -23,13 +29,20 @@ class flaskbuff():
 
 class input_listener():
     def __init__(self, main):
+        self.start_move_floating = main.start_move_floating
         self.start_stop = main.event.btn_start
         self.is_working = getattr(main, 'is_working')
         self.is_setting = getattr(main, 'is_setting')
         self.ui = getattr(main, 'ui')
+
+        self.btn_signal = trigger_move_button(main)
+        self.btn_signal.setGeometry(QRect(0, 0, 0, 0))
+        self.btn_signal.clicked.connect(main.event.change_floating_border)
+
         self.keyboard = keyboard.Controller()
         self.mouse_listener = mouse.Listener(on_move = self.mouse_on_move, on_click = self.mouse_on_click, on_scroll = self.mouse_on_scroll)
         self.keyboard_listener = keyboard.Listener(on_press = self.keyboard_on_press, on_release = self.keyboard_on_release)
+
         self.AUTO = False
         self.MOUSE_MAIN_SCREEN = True
         self.TRIGGER_FLAG = False
@@ -111,6 +124,9 @@ class input_listener():
         button = self.button_regularization(button)
         if button in ['up', 'down', 'left', 'right']:
             return
+        elif button == 'ctrl_l':
+            self.start_move_floating(True)
+            self.btn_signal.click()
         elif self.is_setting():
             self.last_button = button
         elif button == self.switch_button:
@@ -123,6 +139,9 @@ class input_listener():
 
     def keyboard_on_release(self, button):
         button = self.button_regularization(button)
+        if button == 'ctrl_l':
+            self.start_move_floating(False)
+            self.btn_signal.click()
         if not self.is_working():
             return
         elif button in self.trigger_button:
