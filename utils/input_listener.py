@@ -14,7 +14,7 @@ class flaskbuff():
     def __init__(self, key, cdt):
         self.key = key
         self.cdt = cdt
-        self.trigger_time = 0
+        self.trigger_time = time.time()
 
     def trigger(self):
         trigger_time = time.time()
@@ -26,6 +26,28 @@ class flaskbuff():
 
     def press(self):
         return self.key
+
+class Delaybuff(flaskbuff):
+    def __init__(self, key, cdt):
+        super().__init__(key, cdt)
+        self.delay_mode = True
+        self.delay_time = cdt
+        self.cdt = 0.1
+
+    def trigger(self):
+        trigger_time = time.time()
+        if trigger_time - self.trigger_time > self.cdt: # not using
+            self.trigger_time = trigger_time
+            if self.delay_mode:
+                self.trigger_time += self.delay_time
+                self.delay_mode = False
+                return False
+            return True
+        else:
+            return False
+
+    def key_release(self):
+        self.delay_mode = True
 
 class input_listener():
     def __init__(self, main):
@@ -81,8 +103,11 @@ class input_listener():
             if flask_time[i] != '':
                 self.buff.append(flaskbuff(key, float(flask_time[i])))
         for i, key in enumerate(buff):
-            if buff_time[i] != '':
-                self.buff.append(flaskbuff(key, float(buff_time[i])))
+            if buff_time[i] != '': 
+                if i < 4:
+                    self.buff.append(flaskbuff(key, float(buff_time[i])))
+                else:
+                    self.buff.append(Delaybuff(key, float(buff_time[i])))
         self.trigger_button = trigger
         if trigger == ['','','']:
             self.AUTO = True
@@ -112,6 +137,7 @@ class input_listener():
             if pressed:
                 self.TRIGGER_FLAG = True
             else:
+                self.buff[-1].key_release()
                 self.TRIGGER_FLAG = False
 
     def mouse_on_scroll(self, x, y ,dx, dy):
@@ -146,6 +172,7 @@ class input_listener():
             return
         elif button in self.trigger_button:
             self.TRIGGER_FLAG = False
+            self.buff[-1].key_release()
 
     def start(self):
         self.t = threading.Thread(target=self.run,)
