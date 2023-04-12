@@ -9,8 +9,8 @@ class poe_detector(QThread):
     def __init__(self, main):
         super().__init__()
         self.main = main
-        # self.game = '小算盤'
-        self.game = 'Path of Exile'
+        self.game = '小算盤' # for debug
+        # self.game = 'Path of Exile'
         self.this_app = 'POE自動喝水'
         self.float_win = '懸浮視窗'
         self.poe_hWnd = 0
@@ -52,4 +52,4 @@ class poe_detector(QThread):
                 self.playing_signal.emit(True)
             else:
                 self.playing_signal.emit(False)
-            time.sleep(0.2)
+            time.sleep(0.5)
