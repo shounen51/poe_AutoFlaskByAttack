@@ -24,7 +24,7 @@ class A_form():
         self.font9 = QtGui.QFont('微軟正黑體', 9)
 
         """ main """
-        self.label_main = QtWidgets.QLabel(Form)
+        self.label_main = flask_label(Form, event)
         self.label_main.setGeometry(QtCore.QRect(30, 30, 215, 94))
         display_image(self.label_main, flask_png)
         # self.label_main.setStyleSheet('QLabel {background-image : url("./src/flask.png")}')
@@ -54,6 +54,14 @@ class A_form():
         self.edit_global_enable_key.setGeometry(QtCore.QRect(10, 30, 101, 51))
         self.edit_global_enable_key.setAlignment(Qt.AlignCenter)
         self.edit_global_enable_key.setReadOnly(True)
+
+        self.sets_index_labels = []
+        for i in range(5):
+            _label = my_label(Form)
+            _label.setGeometry(QtCore.QRect(54 + 38*i, 120, 20, 20))
+            _label.setFont(self.font9)
+            _label.setText("")
+            self.sets_index_labels.append(_label)
 
         self.edit_new_config = my_line_edit(Form)
         self.edit_new_config.setFont(self.font12)
@@ -162,9 +170,10 @@ class A_form():
         """ not ui """
         self.retranslateUi(Form)
         self.init_config_combobox()
-        self.load_setting()
+        self.load_setting(event)
         QtCore.QMetaObject.connectSlotsByName(Form)
         self.event_connect(event)
+        self.choose_set(0)
 
     def event_connect(self, event):
         self.btn_start.clicked.connect(event.btn_start)
@@ -204,7 +213,7 @@ class A_form():
         self.btn_rename_config.setText(_translate("MainWindow", "修改名稱"))
         self.btn_save_config.setText(_translate("MainWindow", "儲存設定"))
         self.btn_del_config.setText(_translate("MainWindow", "刪除設定"))
-        self.btn_floating_win.setText(_translate("MainWindow", "開啟懸浮"))
+        self.btn_floating_win.setText(_translate("MainWindow", "關閉懸浮"))
         self.gb_global.setTitle(_translate("MainWindow", "啟動快捷鍵"))
         # self.edit_global_enable_key.setPlaceholderText(_translate("MainWindow", "f2"))
         self.edit_new_config.setPlaceholderText(_translate("MainWindow", "設定檔名稱"))
@@ -246,22 +255,30 @@ class A_form():
             self.gb_buff.setEnabled(self.main.is_editOK())
             self.gb_trigger.setEnabled(self.main.is_editOK())
 
+    def choose_set(self, index):
+        for i in range(5):
+            self.sets_index_labels[i].setStyleSheet('QLabel {background-color: #242424; color: #E6E6E6;}')
+            self.sets_index_labels[i].setText("^" if self.main.set_enabel_status[i] else "")
+        self.sets_index_labels[index].setText("^")
+        self.sets_index_labels[index].setStyleSheet('QLabel {background-color: #242424; color: #20E620;}')        
+
     def new_config(self, config_name):
         self.edit_new_config.setText('')
         self.enable_edit(True)
         self.combo_config.addItem(config_name)
 
-    def load_setting(self):
+    def load_setting(self, event):
         config_name = self.main.config_name
         if config_name == '':
             self.enable_edit(False)
         else:
+            set_index = event.current_set_index 
             global_enable_key = self.main.from_setting('global', 'key', 'str')
-            flask_key_list = self.main.from_setting('flask', 'key', 'list')
-            flask_time_list = self.main.from_setting('flask', 'time', 'list')
-            buff_key_list = self.main.from_setting('buff', 'key', 'list')
-            buff_time_list = self.main.from_setting('buff', 'time', 'list')
-            trigger_key_list = self.main.from_setting('trigger', 'key', 'list')
+            flask_key_list = self.main.from_setting('flask', f'key{set_index}', 'list')
+            flask_time_list = self.main.from_setting('flask', f'time{set_index}', 'list')
+            buff_key_list = self.main.from_setting('buff', f'key{set_index}', 'list')
+            buff_time_list = self.main.from_setting('buff', f'time{set_index}', 'list')
+            trigger_key_list = self.main.from_setting('trigger', f'key{set_index}', 'list')
 
             i = self.combo_config.findText(config_name)
             self.combo_config.setCurrentIndex(i)
@@ -270,12 +287,16 @@ class A_form():
                 self.edit_flask_key[i].setText(key)
                 if key == '':
                     self.edit_flask_time[i].setEnabled(False)
+                else:
+                    self.edit_flask_time[i].setEnabled(True)
             for i, Dtime in enumerate(flask_time_list):
                 self.edit_flask_time[i].setText(Dtime)
             for i, key in enumerate(buff_key_list):
                 self.edit_buff_key[i].setText(key)
                 if key == '':
                     self.edit_buff_time[i].setEnabled(False)
+                else:
+                    self.edit_buff_time[i].setEnabled(True)
             for i, Dtime in enumerate(buff_time_list):
                 self.edit_buff_time[i].setText(Dtime)
             for i, key in enumerate(trigger_key_list):

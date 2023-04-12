@@ -2,17 +2,17 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-import PyQt5.sip
 
 class flask_label(QLabel):
-    def __init__(self, parent, event, index):
+    def __init__(self, parent, event):
         QLabel.__init__(self, parent)
         self.event = event
-        self.index = index
         self.setStyleSheet('QLabel {background-color: #000000; color: #000000;}')
     def mousePressEvent(self, e):
         if e.buttons() == Qt.LeftButton:
-            self.event.drink_Bottled_Faith(self.index)
+            x = e.x()
+            index = 0 if x < 50 else 1 if x < 88 else 2 if x < 127 else 3 if x < 167 else 4
+            self.event.drink_Bottled_Faith(index)
 
 class clickable_label(QLabel):
     def __init__(self, parent, event):
@@ -35,6 +35,8 @@ class focus_line_edit(QLineEdit):
 
     def focusOutEvent(self, e):
         self.event.focus_out(self)
+        self.event.check_set_enable_status()
+
     def keyPressEvent(self,e):
         if e.key() in [16777234, 16777235, 16777236, 16777237, 16777251]:
             return

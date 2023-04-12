@@ -9,8 +9,11 @@
 ⠄⠄⠄⢀⣶⡟⣽⠼⢀⡕⢀⠘⠸⢮⡳⡻⡍⡷⡆⠤⠤⠭⢸⢳⣷⢸⡟⣷⠄⠄⠄⠄
 '''
 """[summary]
-    v1.5.2
-        為了完美觸發將軍戰吼，T改為延遲觸發，T的CD時間強制為0.1，欄位空格填入延遲時間(引導施放時間)
+    v1.5.3
+        修正懸浮視窗偶爾會在非遊戲時顯示的問題
+        更好的觸發方式 (占用更少資源)
+        最多同時啟用三組設定 (不用多開)
+        懸浮預設開啟
 """
 
 import ctypes
@@ -24,7 +27,6 @@ import traceback
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-import PyQt5.sip
 
 from ui.A import A_form
 from ui.floating_win import B_form
@@ -44,7 +46,7 @@ class MainWindow(QMainWindow):
         myicon.addPixmap(base2Qpixmap(icon_png), QIcon.Normal, QIcon.Off)
         self.setWindowIcon(myicon)
         self.PLAYING = False
-        self.FLOATING = False
+        self.FLOATING = True
         self.detector = poe_detector(self)
         self.detector.playing_signal.connect(self.set_playing)
         self.SETTING = False
@@ -57,7 +59,9 @@ class MainWindow(QMainWindow):
         self.config_list = list_ini('./configs')
         self.config_name = load_ini(self.config_list)
         self.now_config = lambda: self.config_name
+        self.set_enabel_status = [False for _ in range(5)]
         OK, self.setting = load_config(f"./configs/{self.config_name}.ini")
+
         self.event = btn_events(self)
         self.ui = A_form(self, self.event)
         self.floating_window = B_form(self)
@@ -67,6 +71,7 @@ class MainWindow(QMainWindow):
         self.check_updata = check_version_thread()
         self.check_updata.update_signal.connect(self.need2update)
         self.check_updata.start()
+        self.check_set_enable_status()
 
     def showEvent(self, event):
         print('main show')
@@ -95,7 +100,8 @@ class MainWindow(QMainWindow):
         return self.MOVEFLOWTING
 
     def start_stop(self, setting={}):
-        if not self.WORKING:
+        self.WORKING = not self.WORKING
+        if self.WORKING:
             self.linstener.load_and_start(setting)
             self.floating_window.set_working(True)
             if self.PLAYING:
@@ -105,7 +111,6 @@ class MainWindow(QMainWindow):
         else:
             self.floating_window.set_working(False)
             self.ui.btn_start.setStyleSheet('QPushButton {background-color: #E62020; color: #E6E6E6;}')
-        self.WORKING = not self.WORKING
 
     def set_playing(self, play):
         self.PLAYING = play
@@ -127,12 +132,18 @@ class MainWindow(QMainWindow):
         self.ui.new_config(config_name)
         self.config_list.append(config_name)
         self.change_config(config_name)
+        
+        self.check_set_enable_status()
 
     def change_config(self, config_name):
         self.config_name = config_name
         save_ini(config_name)
         OK, self.setting = load_config(f"./configs/{self.config_name}.ini")
-        self.ui.load_setting()
+        self.ui.load_setting(self.event)
+
+    def change_set(self, set_index):
+        self.ui.load_setting(self.event)
+        self.ui.choose_set(set_index)
 
     def from_setting(self, major_key, detail_key, _type='str'):
         try:
@@ -166,6 +177,17 @@ class MainWindow(QMainWindow):
             self.setting[major_key][detail_key] = v
         else:
             self.setting[major_key][detail_key] = str(value)
+
+    def check_set_enable_status(self):
+        for set_i in range(5):
+            flask_key = self.from_setting("flask", f"key{set_i}" , "list")
+            flask_time = self.from_setting("flask", f"time{set_i}" , "list")
+            buff_key = self.from_setting("flask", f"key{set_i}" , "list")
+            buff_time = self.from_setting("flask", f"time{set_i}" , "list")
+            if len(["" for i in range(5) if flask_key[i] != "" and flask_time[i] != ""]) > 0 or len(["" for i in range(5) if buff_key[i] != "" and buff_time[i] != ""]) > 0:
+                self.set_enabel_status[set_i] = True
+                continue
+            self.set_enabel_status[set_i] = False     
 
     def closeEvent(self, event):
         pass

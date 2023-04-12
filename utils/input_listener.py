@@ -20,9 +20,9 @@ class flaskbuff():
         trigger_time = time.time()
         if trigger_time - self.trigger_time > self.cdt: # not using
             self.trigger_time = trigger_time
-            return True
+            return True, self.cdt
         else:
-            return False
+            return False, self.cdt - (trigger_time - self.trigger_time)
 
     def press(self):
         return self.key
@@ -57,6 +57,7 @@ class input_listener():
         self.is_setting = getattr(main, 'is_setting')
         self.ui = getattr(main, 'ui')
 
+        self.con = threading.Condition()
         self.btn_signal = trigger_move_button(main)
         self.btn_signal.setGeometry(QRect(0, 0, 0, 0))
         self.btn_signal.clicked.connect(main.event.change_floating_border)
@@ -65,13 +66,13 @@ class input_listener():
         self.mouse_listener = mouse.Listener(on_move = self.mouse_on_move, on_click = self.mouse_on_click, on_scroll = self.mouse_on_scroll)
         self.keyboard_listener = keyboard.Listener(on_press = self.keyboard_on_press, on_release = self.keyboard_on_release)
 
-        self.AUTO = False
         self.MOUSE_MAIN_SCREEN = True
-        self.TRIGGER_FLAG = False
         self.last_button = ''
         self.switch_button = ''
-        self.trigger_button = []
-        self.buff = []
+        self.sets = [{"trigger_button":[], "buff":[]} for _ in range(5)]
+        self.trigger_set_index = [] # for notify loop thread which set is triggered
+        self.auto_sets = []
+        self.t_auto = threading.Thread(target=self.run_auto,)
 
     def button_regularization(self, btn):
         return str(btn).split('.')[-1].replace("'",'')
@@ -92,27 +93,34 @@ class input_listener():
 
     def load_and_start(self, setting):
         switch = setting['switch']
-        flask = setting['flask_key']
-        flask_time = setting['flask_time']
-        buff = setting['buff_key']
-        buff_time = setting['buff_time']
-        trigger = setting['trigger_key']
-        self.buff.clear()
+        flasks = setting['flask_key']
+        flask_times = setting['flask_time']
+        buffs = setting['buff_key']
+        buff_times = setting['buff_time']
+        triggers = setting['trigger_key']
         self.switch_button = switch
-        for i, key in enumerate(flask):
-            if flask_time[i] != '':
-                self.buff.append(flaskbuff(key, float(flask_time[i])))
-        for i, key in enumerate(buff):
-            if buff_time[i] != '': 
-                if i < 4:
-                    self.buff.append(flaskbuff(key, float(buff_time[i])))
-                else:
-                    self.buff.append(Delaybuff(key, float(buff_time[i])))
-        self.trigger_button = trigger
-        if trigger == ['','','']:
-            self.AUTO = True
-        else:
-            self.AUTO = False
+        self.auto_sets.clear()
+        if self.t_auto.is_alive():
+            self.t_auto._stop_event = threading.Event()
+            self.t_auto._stop_event.set()
+        for set_index, set in enumerate(self.sets):
+            set["buff"].clear()
+            set["trigger_button"].clear()
+            # set["buff"] = [flaskbuff(key, float(flask_times[set_index][f_index])) for f_index, key in enumerate(flasks[set_index]) if flask_times[set_index][f_index] != '']
+            for f_index, key in enumerate(flasks[set_index]):
+                if flask_times[set_index][f_index] != '':
+                    set["buff"].append(flaskbuff(key, float(flask_times[set_index][f_index])))
+            for b_index, key in enumerate(buffs[set_index]):
+                if buff_times[set_index][b_index] != '':
+                    set["buff"].append(flaskbuff(key, float(buff_times[set_index][b_index])))
+            for t_index, key in enumerate(triggers[set_index]):
+                if key != '':
+                    set["trigger_button"].append(key)
+            if len(set["trigger_button"]) == 0 and len(set["buff"]) > 0: self.auto_sets.append(set)
+        if len(self.auto_sets) > 0:
+            self.t_auto = threading.Thread(target=self.run_auto,)
+            self.t_auto.setDaemon(True)
+            self.t_auto.start()
 
     def mouse_on_move(self, x, y):
         pass
@@ -124,21 +132,20 @@ class input_listener():
 
     def mouse_on_click(self, x, y , button, pressed):
         button = self.button_regularization(button)
+        trigger_buttons = [btn for set in self.sets for btn in set["trigger_button"]]
         if self.is_setting():
             self.last_button = button
-        elif button == self.trigger_button and pressed:
-            self.TRIGGER_FLAG = False
+        elif button == trigger_buttons and pressed:
             self.start_stop()
         elif not self.is_working():
             return
         # print('{0} at {1}'.format('Pressed' if pressed else 'Released', (x, y)))
         # print(button)
-        elif button in self.trigger_button:
+        elif button in trigger_buttons:
             if pressed:
-                self.TRIGGER_FLAG = True
-            else:
-                self.buff[-1].key_release()
-                self.TRIGGER_FLAG = False
+                self.trigger_set_index = [i for i ,set in enumerate(self.sets) for btn in set["trigger_button"] if btn == button]
+                with self.con:
+                    self.con.notify()
 
     def mouse_on_scroll(self, x, y ,dx, dy):
         pass
@@ -148,6 +155,7 @@ class input_listener():
 
     def keyboard_on_press(self, button):
         button = self.button_regularization(button)
+        trigger_buttons = [btn for set in self.sets for btn in set["trigger_button"]]
         if button in ['up', 'down', 'left', 'right']:
             return
         elif button == 'alt_l':
@@ -156,12 +164,13 @@ class input_listener():
         elif self.is_setting():
             self.last_button = button
         elif button == self.switch_button:
-            self.TRIGGER_FLAG = False
             self.start_stop()
         elif not self.is_working():
             return
-        elif button in self.trigger_button:
-            self.TRIGGER_FLAG = True
+        elif button in trigger_buttons:
+            self.trigger_set_index = [i for i ,set in enumerate(self.sets) for btn in set["trigger_button"] if btn == button]
+            with self.con:
+                self.con.notify()
 
     def keyboard_on_release(self, button):
         button = self.button_regularization(button)
@@ -170,9 +179,6 @@ class input_listener():
             self.btn_signal.click()
         if not self.is_working():
             return
-        elif button in self.trigger_button:
-            self.TRIGGER_FLAG = False
-            self.buff[-1].key_release()
 
     def start(self):
         self.t = threading.Thread(target=self.run,)
@@ -183,12 +189,27 @@ class input_listener():
         self.mouse_listener.start()
         self.keyboard_listener.start()
         while True:
-            if (self.TRIGGER_FLAG or self.AUTO) and self.is_working():
-                for buff in self.buff:
-                    if buff.trigger():
-                        self.keyboard.press(self.button_unregularization(buff.press()))
-                        self.keyboard.release(self.button_unregularization(buff.press()))
-            time.sleep(0.05)
+            self.con.acquire()
+            self.con.wait()
+            for set_index in self.trigger_set_index:
+                for buff in self.sets[set_index]["buff"]:
+                    if self.is_working():
+                        if buff.trigger()[0]:
+                            self.keyboard.press(self.button_unregularization(buff.press()))
+                            self.keyboard.release(self.button_unregularization(buff.press()))
+
+    def run_auto(self):
+        while True:
+            sleep_min = 1
+            for auto_set in self.auto_sets:
+                for buff in auto_set["buff"]:
+                    if self.is_working():
+                        TRIGGER, sleep_time = buff.trigger()
+                        if sleep_time < sleep_min: sleep_min = sleep_time
+                        if TRIGGER:
+                            self.keyboard.press(self.button_unregularization(buff.press()))
+                            self.keyboard.release(self.button_unregularization(buff.press()))
+            time.sleep(sleep_min)
 
     def join(self):
         self.t.join()

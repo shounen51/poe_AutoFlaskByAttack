@@ -21,7 +21,7 @@ from src.moving_floating_off import moving_floating_off
 
 class btn_events():
     def __init__(self, main_window):
-        self.Bottled_Faith = [3,3,3,3,3]
+        self.current_set_index = 0
         self.main = main_window
         self.browser = webbrowser.get('windows-default')
 
@@ -48,6 +48,7 @@ class btn_events():
         if self.main.is_working():
             return
         elif self.main.is_setting():
+            time.sleep(0.01)
             key = self.main.linstener.get_last()
             if key == 'delete':
                 edit.setText('')
@@ -77,13 +78,13 @@ class btn_events():
     """ 物件事件 """
     def btn_start(self):
         if not self.main.WORKING:
-            self.btn_save_config()
+            self.btn_save_config(self.current_set_index)
             switch = self.main.from_setting('global', 'key', 'str')
-            flask_key = self.main.from_setting('flask', 'key', 'list')
-            flask_time = self.main.from_setting('flask', 'time', 'list')
-            buff_key = self.main.from_setting('buff', 'key', 'list')
-            buff_time = self.main.from_setting('buff', 'time', 'list')
-            trigger_key = self.main.from_setting('trigger', 'key', 'list')
+            flask_key = [self.main.from_setting('flask', f'key{i}', 'list') for i in range(5)]
+            flask_time = [self.main.from_setting('flask', f'time{i}', 'list') for i in range(5)]
+            buff_key = [self.main.from_setting('buff', f'key{i}', 'list') for i in range(5)]
+            buff_time = [self.main.from_setting('buff', f'time{i}', 'list') for i in range(5)]
+            trigger_key = [self.main.from_setting('trigger', f'key{i}', 'list') for i in range(5)]
             setting = {
                 'switch':switch,
                 'flask_key':flask_key,
@@ -95,7 +96,7 @@ class btn_events():
             self.main.start_stop(setting)
         else:
             self.main.start_stop()
-        self.main.ui.enable_edit(True ,'global')
+        self.main.ui.enable_edit(True ,'all')
 
     def btn_new_config(self):
         file_name = self.main.ui.edit_new_config.text()
@@ -112,6 +113,7 @@ class btn_events():
         config_name = self.main.ui.combo_config.currentText()
         if config_name == '':
             return
+        self.current_set_index = 0
         self.main.change_config(config_name)
 
     def btn_rename_config(self):
@@ -134,7 +136,7 @@ class btn_events():
         except:
             pass
 
-    def btn_save_config(self):
+    def btn_save_config(self, index):
         global_key = self.main.ui.edit_global_enable_key.text()
         flask_key = take_text(self.main.ui.edit_flask_key)
         flask_time = take_text(self.main.ui.edit_flask_time)
@@ -142,12 +144,14 @@ class btn_events():
         buff_time = take_text(self.main.ui.edit_buff_time)
         trigger = take_text(self.main.ui.edit_trigger_key)
         self.main.modfy_setting('global', 'key', global_key)
-        self.main.modfy_setting('flask', 'key', flask_key)
-        self.main.modfy_setting('flask', 'time', flask_time)
-        self.main.modfy_setting('buff', 'key', buff_key)
-        self.main.modfy_setting('buff', 'time', buff_time)
-        self.main.modfy_setting('trigger', 'key', trigger)
+        self.main.modfy_setting('flask', f'key{index}', flask_key)
+        self.main.modfy_setting('flask', f'time{index}', flask_time)
+        self.main.modfy_setting('buff', f'key{index}', buff_key)
+        self.main.modfy_setting('buff', f'time{index}', buff_time)
+        self.main.modfy_setting('trigger', f'key{index}', trigger)
         save_config(f"./configs/{self.main.config_name}.ini", self.main.setting)
+        
+        self.main.check_set_enable_status()
 
     def btn_del_config(self):
         cb = self.main.ui.combo_config
@@ -177,13 +181,19 @@ class btn_events():
     def time_edited(self, edit):
         if float(edit.text()) < 0.1:
             edit.setText('0.1')
+        self.check_set_enable_status()
 
     def logo_click(self):
         self.browser.open_new_tab('https://github.com/shounen51/poe_AutoFlaskByAttack')
 
-    """ 喝水 """
+    """ 切換頁面 """
     def drink_Bottled_Faith(self, index):
-        pass
+        self.btn_save_config(self.current_set_index)
+        self.current_set_index = index
+        self.main.change_set(index)
+
+    def check_set_enable_status(self):
+        self.main.check_set_enable_status()
 
 def take_text(edit_list):
     _list = []
