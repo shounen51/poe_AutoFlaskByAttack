@@ -9,8 +9,8 @@ class poe_detector(QThread):
     def __init__(self, main):
         super().__init__()
         self.main = main
-        self.game = '小算盤' # for debug
-        # self.game = 'Path of Exile'
+        # self.game = '小算盤' # for debug
+        self.game = 'Path of Exile'
         self.this_app = 'POE自動喝水'
         self.float_win = '懸浮視窗'
         self.poe_hWnd = 0
