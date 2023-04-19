@@ -14,7 +14,7 @@ class flaskbuff():
     def __init__(self, key, cdt):
         self.key = key
         self.cdt = cdt
-        self.trigger_time = time.time()
+        self.trigger_time = time.time() - cdt
 
     def trigger(self):
         trigger_time = time.time()
